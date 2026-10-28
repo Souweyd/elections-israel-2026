@@ -1,0 +1,22 @@
+HTTP/2 200 
+age: 13
+cache-control: public, max-age=0, must-revalidate
+content-security-policy-report-only: default-src 'self'; base-uri 'self'; form-action 'self' https://tickchak.co.il https://*.tickchak.co.il; frame-ancestors 'none'; object-src 'none'; img-src 'self' data: https://www.googletagmanager.com https://*.public.blob.vercel-storage.com https://tickchak.co.il https://*.tickchak.co.il https://maps.gstatic.com https://maps.googleapis.com; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com https://tickchak.co.il https://*.tickchak.co.il https://ajax.googleapis.com https://maps.googleapis.com https://platform.twitter.com https://cdn.syndication.twimg.com; style-src 'self' 'unsafe-inline' https://tickchak.co.il https://*.tickchak.co.il https://fonts.googleapis.com; font-src 'self' data: https://tickchak.co.il https://*.tickchak.co.il https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://vitals.vercel-insights.com https://tickchak.co.il https://*.tickchak.co.il https://maps.googleapis.com; media-src 'self' https://*.public.blob.vercel-storage.com; frame-src 'self' https://tickchak.co.il https://*.tickchak.co.il https://*.cardcom.solutions https://www.youtube-nocookie.com https://www.youtube.com https://platform.twitter.com https://syndication.twitter.com
+content-type: text/html; charset=utf-8
+cross-origin-opener-policy: same-origin-allow-popups
+date: Wed, 28 Oct 2026 09:14:31 GMT
+etag: "byptr2jduo6hmx"
+permissions-policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+referrer-policy: strict-origin-when-cross-origin
+server: Vercel
+strict-transport-security: max-age=63072000
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-matched-path: /en/results
+x-nextjs-prerender: 1
+x-nextjs-stale-time: 300
+x-vercel-cache: HIT
+x-vercel-id: cle1::iad1::m5lvm-1793178919536-4ddb5247f088
+content-length: 310149
+
