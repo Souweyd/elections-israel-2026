@@ -2,30 +2,156 @@
  "_doc": "Relevés publiés par la presse à partir des résultats partiels de la Commission électorale centrale. Format décrit dans data/PRESSE.md.",
  "points": [
   {
-   "t": "2026-10-28T05:49:00+02:00", "prog": "≈ 37,4 % des voix",
-   "source": { "label": "Arutz Sheva / INN — résultats partiels officiels de la CEC", "url": "https://www.israelnationalnews.com/news/435272" },
+   "t": "2026-10-28T05:49:00+02:00",
+   "prog": "≈ 37,4 % des voix",
+   "source": {
+    "label": "Arutz Sheva / INN — résultats partiels officiels de la CEC",
+    "url": "https://www.israelnationalnews.com/news/435272"
+   },
    "full": true,
-   "seats": { "likud": 28, "yashar": 21, "joint": 12, "ensemble": 11, "utj": 8, "yb": 8, "dem": 7, "otzma": 7, "shas": 7, "rzp": 7, "raam": 4 }
+   "seats": {
+    "likud": 28,
+    "yashar": 21,
+    "joint": 12,
+    "ensemble": 11,
+    "utj": 8,
+    "yb": 8,
+    "dem": 7,
+    "otzma": 7,
+    "shas": 7,
+    "rzp": 7,
+    "raam": 4
+   }
   },
   {
-   "t": "2026-10-28T07:45:00+02:00", "prog": "≈ 55,4 % des voix",
-   "source": { "label": "Arutz Sheva / INN — résultats partiels officiels de la CEC", "url": "https://www.israelnationalnews.com/news/435272" },
+   "t": "2026-10-28T07:45:00+02:00",
+   "prog": "≈ 55,4 % des voix",
+   "source": {
+    "label": "Arutz Sheva / INN — résultats partiels officiels de la CEC",
+    "url": "https://www.israelnationalnews.com/news/435272"
+   },
    "full": true,
-   "seats": { "likud": 27, "yashar": 21, "joint": 11, "ensemble": 11, "dem": 9, "utj": 9, "yb": 8, "otzma": 7, "shas": 7, "rzp": 6, "raam": 4 }
+   "seats": {
+    "likud": 27,
+    "yashar": 21,
+    "joint": 11,
+    "ensemble": 11,
+    "dem": 9,
+    "utj": 9,
+    "yb": 8,
+    "otzma": 7,
+    "shas": 7,
+    "rzp": 6,
+    "raam": 4
+   }
   },
   {
-   "t": "2026-10-28T07:55:00+02:00", "prog": "51,5 % des voix (57,2 % des bureaux)",
-   "source": { "label": "Ynet News — résultats partiels", "url": "https://www.ynetnews.com/article/hjnatbkaml" },
+   "t": "2026-10-28T07:55:00+02:00",
+   "prog": "51,5 % des voix (57,2 % des bureaux)",
+   "source": {
+    "label": "Ynet News — résultats partiels",
+    "url": "https://www.ynetnews.com/article/hjnatbkaml"
+   },
    "full": true,
-   "seats": { "likud": 27, "yashar": 21, "joint": 12, "ensemble": 11, "dem": 9, "utj": 9, "yb": 8, "shas": 7, "otzma": 6, "rzp": 6, "raam": 4 }
+   "seats": {
+    "likud": 27,
+    "yashar": 21,
+    "joint": 12,
+    "ensemble": 11,
+    "dem": 9,
+    "utj": 9,
+    "yb": 8,
+    "shas": 7,
+    "otzma": 6,
+    "rzp": 6,
+    "raam": 4
+   }
   },
   {
-   "t": "2026-10-28T09:17:00+02:00", "prog": "65,8 % des bureaux",
-   "source": { "label": "Poliwave — chiffres de la Commission électorale centrale", "url": "https://www.poliwave.com/il/live/knesset-2026" },
-   "full": true, "valid": 3413319,
-   "seats": { "likud": 28, "yashar": 21, "joint": 12, "ensemble": 11, "utj": 8, "dem": 8, "yb": 8, "shas": 7, "otzma": 7, "rzp": 6, "raam": 4, "noam": 0 },
-   "pct": { "likud": 21.4, "yashar": 16.2, "joint": 9.5, "ensemble": 8.8, "utj": 6.3, "dem": 6.6, "shas": 5.7, "otzma": 5.7, "rzp": 4.8, "raam": 3.4, "noam": 0.2 },
-   "votes": { "likud": 732001, "yashar": 554397, "joint": 322878, "ensemble": 300887, "utj": 216021, "dem": 225455, "shas": 194069, "otzma": 193414, "rzp": 165003, "raam": 116926, "noam": 5752 }
+   "t": "2026-10-28T09:17:00+02:00",
+   "prog": "65,8 % des bureaux",
+   "source": {
+    "label": "Poliwave — chiffres de la Commission électorale centrale",
+    "url": "https://www.poliwave.com/il/live/knesset-2026"
+   },
+   "full": true,
+   "valid": 3413319,
+   "seats": {
+    "likud": 28,
+    "yashar": 21,
+    "joint": 12,
+    "ensemble": 11,
+    "utj": 8,
+    "dem": 8,
+    "yb": 8,
+    "shas": 7,
+    "otzma": 7,
+    "rzp": 6,
+    "raam": 4,
+    "noam": 0
+   },
+   "pct": {
+    "likud": 21.4,
+    "yashar": 16.2,
+    "joint": 9.5,
+    "ensemble": 8.8,
+    "utj": 6.3,
+    "dem": 6.6,
+    "shas": 5.7,
+    "otzma": 5.7,
+    "rzp": 4.8,
+    "raam": 3.4,
+    "noam": 0.2
+   },
+   "votes": {
+    "likud": 732001,
+    "yashar": 554397,
+    "joint": 322878,
+    "ensemble": 300887,
+    "utj": 216021,
+    "dem": 225455,
+    "shas": 194069,
+    "otzma": 193414,
+    "rzp": 165003,
+    "raam": 116926,
+    "noam": 5752
+   }
+  },
+  {
+   "t": "2026-10-28T10:03:00+02:00",
+   "prog": "72,54 % des bulletins",
+   "source": {
+    "label": "The Petek — chiffres de la Commission électorale centrale",
+    "url": "https://www.thepetek.com/results"
+   },
+   "full": true,
+   "valid": 3757189,
+   "seats": {
+    "likud": 27,
+    "yashar": 21,
+    "joint": 12,
+    "ensemble": 11,
+    "dem": 8,
+    "yb": 8,
+    "utj": 7,
+    "otzma": 7,
+    "shas": 7,
+    "rzp": 6,
+    "raam": 6
+   },
+   "pct": {
+    "likud": 21.1,
+    "yashar": 16.2,
+    "joint": 9.2,
+    "ensemble": 8.9,
+    "dem": 6.5,
+    "yb": 6.0,
+    "utj": 6.0,
+    "otzma": 5.6,
+    "shas": 5.5,
+    "rzp": 5.0,
+    "raam": 4.8
+   }
   }
  ]
 }
