@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Élections israéliennes 2026 — Résultats</title>
+<meta name="description" content="Dépouillement des élections à la 26e Knesset (27 octobre 2026) : sièges, blocs et évolution Likoud / Yashar! / Ensemble, d'après les résultats partiels de la Commission électorale centrale.">
+<meta name="theme-color" content="#0d1117">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Élections israéliennes 2026 — Résultats en direct">
+<meta property="og:description" content="Sièges, blocs et évolution du dépouillement, d'après les résultats partiels de la Commission électorale centrale.">
+<meta property="og:image" content="og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--surface-2:#1c232c;--line:#2a323d;--text:#f0efec;--text-2:#c3c2b7;--muted:#8b949e;--accent:#e8c547;--ok:#3fb950;--err:#f85149;color-scheme:dark}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px}
+h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(28px,7vw,44px);line-height:1.08;margin:6px 0;letter-spacing:-.01em}
+h2{font-size:17px;margin:0;font-weight:600}
+h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 0 8px;font-weight:600}
+.sub{color:var(--text-2);margin:0 0 16px;font-size:14px}
+.muted{color:var(--muted)}.fine{color:var(--muted);font-size:12.5px;margin:12px 0 0}
+a{color:var(--text-2)}
+.top{background:linear-gradient(180deg,#121a24 0%,var(--bg) 100%);border-bottom:1px solid var(--line);padding:22px 0 18px;margin-bottom:16px}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--err);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(248,81,73,.6)}70%{box-shadow:0 0 0 8px rgba(248,81,73,0)}100%{box-shadow:0 0 0 0 rgba(248,81,73,0)}}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+.kpi-l{font-size:11.5px;color:var(--muted);line-height:1.25;display:block}
+.kpi-v{font-size:clamp(20px,5.5vw,28px);font-weight:700;display:block;margin-top:4px}
+.kpi-n{font-size:11.5px;color:var(--muted);display:block}
+.stamp{margin-top:14px;font-size:13px;padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;background:rgba(232,197,71,.14);color:var(--accent);border:1px solid rgba(232,197,71,.4)}
+#hemi{width:100%;max-width:560px;display:block;margin:0 auto}
+#hemi circle{cursor:pointer;transition:opacity .2s}#hemi circle.dim{opacity:.22}
+.hc{text-align:center;margin-top:4px}.hc b{font-size:clamp(22px,6vw,32px)}.hc div{font-size:12px;color:var(--muted)}
+.tip{text-align:center;font-size:13px;color:var(--text-2);min-height:20px;margin-top:4px}
+.bar{position:relative;display:flex;gap:2px;height:22px;border-radius:6px;overflow:hidden;background:var(--surface-2)}
+.bar .maj{position:absolute;top:0;bottom:0;width:2px;background:var(--text);left:calc(61/120*100%)}
+.blocs{list-style:none;padding:0;margin:10px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+.blocs li{display:flex;align-items:center;gap:8px;font-size:13.5px}.blocs .sw{width:10px;height:10px;border-radius:3px;flex:none}.blocs .v{margin-left:auto;font-weight:600}
+.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
+.leg{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:8px 10px;cursor:pointer;text-align:left;color:inherit;font:inherit;min-width:0}
+.leg.off{opacity:.4}.av-none{background:transparent;font-size:18px}
+.av{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;border:2px solid}
+.lt{min-width:0;flex:1}.ln{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ll{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lv{font-size:20px;font-weight:700;white-space:nowrap}
+#chart{width:100%;height:300px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;padding:6px 6px 8px;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap}
+th.num,td.num{text-align:right}td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+th.on{color:var(--text)}
+.pc{display:flex;align-items:center;gap:10px}.pc .sw{width:4px;align-self:stretch;border-radius:2px;flex:none}
+.pn{font-weight:600}.pl{font-size:12px;color:var(--muted)}
+.share{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:999px;background:var(--text);color:var(--bg);border:1px solid var(--text);font:600 14px Inter,sans-serif;cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--text);border-color:var(--line)}
+.btn.gold{background:var(--accent);border-color:var(--accent);color:#1a1500}
+.src li{margin-bottom:4px}.src{padding-left:18px;font-size:13.5px;color:var(--text-2)}
+.foot{color:var(--muted);font-size:12px;text-align:center;padding:8px 0 40px}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:13.5px;z-index:10}
+@media (max-width:560px){.legend{grid-template-columns:1fr}.blocs{grid-template-columns:1fr}#chart{height:270px}.kpis{gap:6px}.kpi{padding:8px 9px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="kicker"><span class="dot"></span>Dépouillement en cours</div>
+  <h1>Élections israéliennes 2026</h1>
+  <p class="sub">26<sup>e</sup> Knesset · scrutin du mardi 27 octobre 2026 · 120 sièges, majorité à 61</p>
+  <div class="kpis">
+    <div class="kpi"><span class="kpi-l">Bureaux dépouillés</span><span class="kpi-v" id="kProg"></span><span class="kpi-n">résultats partiels</span></div>
+    <div class="kpi"><span class="kpi-l">Suffrages valides comptés</span><span class="kpi-v" id="kValid"></span><span class="kpi-n">participation finale 77,7 %</span></div>
+    <div class="kpi"><span class="kpi-l">Sièges estimés</span><span class="kpi-v">120</span><span class="kpi-n">sur 120, selon les voix comptées</span></div>
+  </div>
+  <div class="stamp">Dernier relevé vérifié : <strong id="kTime"></strong><br><span class="muted">Page mise à jour manuellement, pas en temps réel. Résultats officiels en direct : <a href="https://votes26.bechirot.gov.il/nationalresults" target="_blank" rel="noopener">site de la Commission électorale</a>.</span></div>
+</div></header>
+
+<main class="wrap">
+  <section class="card">
+    <div class="head"><h2>Répartition des sièges</h2><span class="badge">Résultats partiels</span></div>
+    <svg id="hemi" viewBox="0 0 400 205" role="img" aria-label="Hémicycle de la Knesset"></svg>
+    <div class="hc"><b id="hBig"></b><div>Bloc Netanyahou · Opposition — majorité 61</div></div>
+    <div class="tip" id="tip">Touchez un siège pour voir le parti</div>
+    <h3>Par bloc politique</h3>
+    <div class="bar" id="bar"></div>
+    <ul class="blocs" id="blocs"></ul>
+    <p class="fine">Les blocs sont un regroupement politique repris de la presse (France 24, Arutz Sheva), pas un résultat officiel. Aucun bloc n'atteint les 61 sièges à ce stade.</p>
+  </section>
+
+  <section class="card">
+    <div class="head"><h2>Likoud, Yashar! et Liste unifiée</h2></div>
+    <div class="legend" id="legend"></div>
+    <div id="chart" aria-label="Évolution des sièges estimés pendant le dépouillement"></div>
+    <p class="fine">Les deux premières listes non arabes et la première liste arabe. Sièges estimés à chaque point publié du dépouillement (heure d'Israël). Chaque point est un relevé daté et sourcé ; aucun point intermédiaire n'est ajouté. Les médias expriment l'avancement tantôt en voix, tantôt en bureaux, d'où des pourcentages non strictement croissants. Touchez une carte pour masquer ou afficher une courbe.</p>
+  </section>
+
+  <section class="card">
+    <div class="head"><h2>Résultats par liste</h2><span class="muted" style="font-size:12.5px">Toucher un en-tête pour trier</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>Liste</th><th class="num" data-s="pct">% voix</th><th class="num on" data-s="seats">Sièges</th><th class="num">Évol.</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table></div>
+    <p class="fine">Sièges estimés sur les voix déjà comptées (seuil 3,25 %) : ils évolueront jusqu'à la proclamation officielle, attendue le 4 novembre 2026. « Évol. » : variation de sièges par rapport au relevé précédent (07:55). « n.d. » : donnée non publiée dans la source.</p>
+  </section>
+
+  <section class="card">
+    <h2>Partager</h2>
+    <div class="share">
+      <button class="btn gold" id="bShare" type="button">Partager</button>
+      <button class="btn ghost" id="bCopy" type="button">Copier le lien</button>
+      <a class="btn ghost" id="bWa" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="btn ghost" id="bFb" target="_blank" rel="noopener">Facebook</a>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Sources</h2>
+    <ul class="src" id="src"></ul>
+  </section>
+  <footer class="foot">Page indépendante, sans publicité ni collecte de données. Chiffres partiels susceptibles d'évoluer.</footer>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+// ───────── DONNÉES (uniquement des chiffres publiés et sourcés) ─────────
+const SOURCES = {
+  inn:  { label: "Arutz Sheva / INN — résultats partiels officiels de la CEC", url: "https://www.israelnationalnews.com/news/435272" },
+  ynet: { label: "Ynet News — résultats partiels", url: "https://www.ynetnews.com/article/hjnatbkaml" },
+  pw:   { label: "Poliwave — chiffres de la Commission électorale centrale", url: "https://www.poliwave.com/il/live/knesset-2026" },
+  f24:  { label: "France 24 — direct du 27 octobre 2026", url: "https://www.france24.com/fr/moyen-orient/20261027-direct-ouverture-bureaux-vote-isra%C3%ABl-netanyahu-%C3%A9preuve-urnes" },
+};
+
+// Dernier relevé complet : 28/10/2026 09:17 (UTC+2), 65,8 % des bureaux, 3 413 319 suffrages valides
+const LATEST = {
+  time: "2026-10-28T09:17:00+02:00", progress: "65,8 %", valid: 3413319, source: "pw",
+  parties: [
+    { id:"likud", name:"Likoud", leader:"Benjamin Netanyahou", bloc:"coal", color:"#3987e5", seats:28, pct:21.4, votes:732001, prev:27 },
+    { id:"yashar", name:"Yashar!", leader:"Gadi Eisenkot", bloc:"opp", color:"#d95926", seats:21, pct:16.2, votes:554397, prev:21 },
+    { id:"joint", name:"Liste unifiée", leader:"Youssef Jabareen", bloc:"arab", color:"#2e9a4a", seats:12, pct:9.5, votes:322878, prev:12 },
+    { id:"ensemble", name:"Ensemble (Beyahad)", leader:"Naftali Bennett", bloc:"opp", color:"#1fa5b8", seats:11, pct:8.8, votes:300887, prev:11 },
+    { id:"utj", name:"Judaïsme unifié de la Torah", leader:"Yaakov Asher", bloc:"coal", color:"#7a8aa3", seats:8, pct:6.3, votes:216021, prev:9 },
+    { id:"dem", name:"Les Démocrates", leader:"Yaïr Golan", bloc:"opp", color:"#d55181", seats:8, pct:6.6, votes:225455, prev:9 },
+    { id:"yb", name:"Israel Beytenou", leader:"Avigdor Liberman", bloc:"opp", color:"#9085e9", seats:8, pct:null, votes:null, prev:8 },
+    { id:"shas", name:"Shass", leader:"Aryeh Deri", bloc:"coal", color:"#2f5fa8", seats:7, pct:5.7, votes:194069, prev:7 },
+    { id:"otzma", name:"Otzma Yehudit", leader:"Itamar Ben Gvir", bloc:"coal", color:"#c98500", seats:7, pct:5.7, votes:193414, prev:6 },
+    { id:"rzp", name:"Sionisme religieux – Zehout", leader:"Bezalel Smotrich", bloc:"coal", color:"#a88a3d", seats:6, pct:4.8, votes:165003, prev:6 },
+    { id:"raam", name:"Ra'am", leader:"Mansour Abbas", bloc:"arab", color:"#6fb85b", seats:4, pct:3.4, votes:116926, prev:4 },
+    { id:"noam", name:"Noam", leader:"Avi Maoz", bloc:"coal", color:"#8d8578", seats:0, pct:0.2, votes:5752, prev:0 },
+  ],
+};
+
+const BLOCS = {
+  coal: { label:"Bloc Netanyahou", color:"#3987e5" },
+  opp:  { label:"Bloc d'opposition", color:"#d95926" },
+  arab: { label:"Partis arabes", color:"#2e9a4a" },
+};
+
+// Évolution : sièges estimés publiés à chaque étape (heure d'Israël, UTC+2)
+const TREND = [
+  { t:"2026-10-28T05:49:00+02:00", prog:"≈ 37,4 % des voix", src:"inn",  likud:28, yashar:21, joint:12 },
+  { t:"2026-10-28T07:45:00+02:00", prog:"≈ 55,4 % des voix", src:"inn",  likud:27, yashar:21, joint:11 },
+  { t:"2026-10-28T07:55:00+02:00", prog:"51,5 % des voix (57,2 % des bureaux)", src:"ynet", likud:27, yashar:21, joint:12 },
+  { t:"2026-10-28T09:17:00+02:00", prog:"65,8 % des bureaux", src:"pw", likud:28, yashar:21, joint:12 },
+];
+const TOP3 = ["likud","yashar","joint"]; // 2 premières listes non arabes + 1re liste arabe
+
+// ───────── rendu ─────────
+const $ = id => document.getElementById(id);
+const nf = new Intl.NumberFormat("fr-FR");
+const pf = v => v == null ? "n.d." : v.toLocaleString("fr-FR",{minimumFractionDigits:1,maximumFractionDigits:1}) + " %";
+const P = Object.fromEntries(LATEST.parties.map(p => [p.id, p]));
+const hm = iso => new Intl.DateTimeFormat("fr-FR",{timeZone:"Asia/Jerusalem",hour:"2-digit",minute:"2-digit"}).format(new Date(iso));
+
+$("kProg").textContent = LATEST.progress;
+$("kValid").textContent = nf.format(LATEST.valid);
+$("kTime").textContent = `mercredi 28 octobre 2026 à ${hm(LATEST.time)} (heure d'Israël, UTC+2) — ${SOURCES[LATEST.source].label.split(" — ")[0]}`;
+
+// Hémicycle
+(function hemicycle(){
+  const n=120, rows=7, cx=200, cy=196, rIn=70, rOut=188, dr=(rOut-rIn)/(rows-1);
+  const radii=[...Array(rows)].map((_,i)=>rIn+i*dr), sum=radii.reduce((a,b)=>a+b,0);
+  const counts=radii.map(r=>Math.round(n*r/sum)); counts[rows-1]+=n-counts.reduce((a,b)=>a+b,0);
+  const pts=[]; radii.forEach((r,i)=>{for(let j=0;j<counts[i];j++){const a=Math.PI-Math.PI*j/(counts[i]-1);pts.push({x:cx+r*Math.cos(a),y:cy-r*Math.sin(a),a})}});
+  pts.sort((p,q)=>q.a-p.a);
+  const order=["arab","opp","coal"], seq=[];
+  order.forEach(b=>LATEST.parties.filter(p=>p.bloc===b&&p.seats).sort((x,y)=>b==="coal"?x.seats-y.seats:y.seats-x.seats).forEach(p=>{for(let i=0;i<p.seats;i++)seq.push(p)}));
+  const rad=Math.min(dr*.42,7.5), svg=$("hemi");
+  svg.innerHTML=pts.map((p,i)=>`<circle data-i="${i}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${rad.toFixed(1)}" fill="${seq[i]?seq[i].color:'#2a323d'}"></circle>`).join("");
+  const show=e=>{const c=e.target.closest("circle");if(!c)return;const p=seq[+c.dataset.i];
+    svg.querySelectorAll("circle").forEach(el=>el.classList.toggle("dim",seq[+el.dataset.i]!==p));
+    $("tip").textContent=p?`${p.name} — ${p.leader} : ${p.seats} sièges`:"Siège non attribué";};
+  svg.addEventListener("pointerover",show);svg.addEventListener("click",show);
+  svg.addEventListener("pointerleave",()=>svg.querySelectorAll("circle").forEach(el=>el.classList.remove("dim")));
+  const tot={coal:0,opp:0,arab:0}; LATEST.parties.forEach(p=>tot[p.bloc]+=p.seats);
+  $("hBig").textContent=`${tot.coal} · ${tot.opp}`;
+  $("bar").innerHTML=["coal","opp","arab"].map(k=>`<div style="width:${tot[k]/120*100}%;background:${BLOCS[k].color}"></div>`).join("")+`<span class="maj" title="Majorité : 61"></span>`;
+  $("blocs").innerHTML=["coal","opp","arab"].map(k=>`<li><span class="sw" style="background:${BLOCS[k].color}"></span>${BLOCS[k].label}<span class="v">${tot[k]} <span class="muted">sièges</span></span></li>`).join("");
+})();
+
+// Graphique des trois listes
+const hidden=new Set();
+const initials=s=>s.split(/\s+/).slice(-2).map(w=>w[0]).join("").toUpperCase();
+function legend(){
+  $("legend").innerHTML=TOP3.map(id=>{const p=P[id];return `<button type="button" class="leg ${hidden.has(id)?"off":""}" data-id="${id}" aria-pressed="${!hidden.has(id)}">
+    ${p.bloc==="arab"?`<span class="av av-none" style="border-color:${p.color};color:${p.color}">●</span>`:`<span class="av" style="background:${p.color};border-color:${p.color}">${initials(p.leader)}</span>`}
+    <span class="lt"><div class="ln">${p.name}</div><div class="ll">${p.leader}</div></span>
+    <span class="lv" style="color:${p.color}">${p.seats}</span></button>`}).join("");
+}
+legend();
+$("legend").addEventListener("click",e=>{const b=e.target.closest(".leg");if(!b)return;const id=b.dataset.id;hidden.has(id)?hidden.delete(id):hidden.add(id);legend();draw();});
+let chart;
+function draw(){
+  if(!window.echarts){$("chart").innerHTML='<p class="fine">Graphique indisponible (connexion).</p>';return;}
+  chart=chart||echarts.init($("chart"),null,{renderer:"svg"});
+  chart.setOption({
+    animationDuration:700,
+    grid:{left:34,right:40,top:14,bottom:30},
+    legend:{show:false,selected:Object.fromEntries(TOP3.map(id=>[P[id].name,!hidden.has(id)]))},
+    tooltip:{trigger:"axis",backgroundColor:"#0d1117",borderColor:"#2a323d",textStyle:{color:"#f0efec",fontSize:12},
+      formatter:items=>{if(!items.length)return"";const pt=TREND[items[0].dataIndex];
+        return `<b>${hm(pt.t)}</b> · ${pt.prog}<br><span style="color:#8b949e">${SOURCES[pt.src].label.split(" — ")[0]}</span>`+
+          items.map(it=>`<br><span style="display:inline-block;width:10px;height:2px;background:${it.color};vertical-align:middle;margin-right:6px"></span>${it.seriesName} : <b>${it.value[1]} sièges</b>`).join("");}},
+    xAxis:{type:"time",minInterval:3600000,axisLabel:{color:"#8b949e",formatter:v=>hm(v)},axisLine:{lineStyle:{color:"#2a323d"}},splitLine:{show:false}},
+    yAxis:{type:"value",min:0,max:35,interval:5,axisLabel:{color:"#8b949e"},splitLine:{lineStyle:{color:"#222a33"}}},
+    series:TOP3.map(id=>({name:P[id].name,type:"line",symbolSize:9,showSymbol:true,
+      lineStyle:{width:2,color:P[id].color},itemStyle:{color:P[id].color,borderColor:"#161b22",borderWidth:2},
+      endLabel:{show:true,formatter:d=>d.value[1],color:"#f0efec",fontWeight:600},
+      data:TREND.map(pt=>[pt.t,pt[id]])}))
+  },{replaceMerge:["series"]});
+}
+draw();window.addEventListener("resize",()=>chart&&chart.resize());
+
+// Tableau
+let sortKey="seats";
+function table(){
+  const rows=[...LATEST.parties].sort((a,b)=>sortKey==="pct"?(b.pct??-1)-(a.pct??-1):(b.seats-a.seats)||((b.pct??0)-(a.pct??0)));
+  $("tb").innerHTML=rows.map(p=>{const d=p.seats-p.prev;
+    return `<tr><td><div class="pc"><span class="sw" style="background:${p.color}"></span><div><div class="pn">${p.name}</div><div class="pl">${p.leader}</div></div></div></td>
+    <td class="num">${pf(p.pct)}<div class="pl">${p.votes==null?"":nf.format(p.votes)}</div></td>
+    <td class="num"><b>${p.seats}</b></td>
+    <td class="num" style="color:${d>0?"var(--ok)":d<0?"var(--err)":"var(--muted)"}">${d>0?"+"+d:d<0?"−"+(-d):"="}</td></tr>`}).join("");
+  document.querySelectorAll("th[data-s]").forEach(th=>th.classList.toggle("on",th.dataset.s===sortKey));
+}
+document.querySelectorAll("th[data-s]").forEach(th=>th.addEventListener("click",()=>{sortKey=th.dataset.s;table();}));
+table();
+
+// Sources
+$("src").innerHTML=Object.values(SOURCES).map(s=>`<li><a href="${s.url}" target="_blank" rel="noopener">${s.label}</a></li>`).join("")+
+  `<li>Résultats officiels : <a href="https://votes26.bechirot.gov.il/nationalresults" target="_blank" rel="noopener">Commission électorale centrale d'Israël</a> (proclamation attendue le 4 novembre 2026).</li>`;
+
+// Partage
+const url=location.href.split("#")[0], txt="Élections israéliennes 2026 — Résultats";
+$("bWa").href="https://wa.me/?text="+encodeURIComponent(txt+" "+url);
+$("bFb").href="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(url);
+const toast=m=>{const t=$("toast");t.textContent=m;t.hidden=false;setTimeout(()=>t.hidden=true,2400)};
+const copy=async()=>{try{await navigator.clipboard.writeText(url);toast("Lien copié")}catch{prompt("Copiez le lien :",url)}};
+$("bCopy").onclick=copy;
+$("bShare").onclick=async()=>{if(navigator.share){try{await navigator.share({title:txt,url})}catch{}}else copy()};
+</script>
+</body>
+</html>
