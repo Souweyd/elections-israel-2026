@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Élections israéliennes 2026 — Résultats</title>
-<meta name="description" content="Dépouillement des élections à la 26e Knesset (27 octobre 2026) : sièges, blocs et évolution Likoud / Yashar! / Ensemble, d'après les résultats partiels de la Commission électorale centrale.">
-<meta name="theme-color" content="#0d1117">
+<title>Élections israéliennes 2026 — Résultats · ODGV (site satirique)</title>
+<meta name="description" content="Portail satirique de suivi des élections à la 26e Knesset (27 octobre 2026) : sièges, blocs et évolution du dépouillement, chiffres réels issus des résultats partiels de la Commission électorale centrale.">
+<meta name="theme-color" content="#0b2545">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:title" content="Élections israéliennes 2026 — Résultats en direct">
-<meta property="og:description" content="Sièges, blocs et évolution du dépouillement, d'après les résultats partiels de la Commission électorale centrale.">
+<meta property="og:description" content="Sièges, blocs et évolution du dépouillement. Chiffres réels, ton satirique.">
 <meta property="og:image" content="https://souweyd.github.io/elections-israel-2026/og-image.png">
 <meta property="og:url" content="https://souweyd.github.io/elections-israel-2026/">
 <meta name="twitter:image" content="https://souweyd.github.io/elections-israel-2026/og-image.png">
@@ -21,116 +21,200 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
 <style>
-:root{--bg:#0d1117;--surface:#161b22;--surface-2:#1c232c;--line:#2a323d;--text:#f0efec;--text-2:#c3c2b7;--muted:#8b949e;--accent:#e8c547;--ok:#3fb950;--err:#f85149;color-scheme:dark}
-*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
-.wrap{max-width:920px;margin:0 auto;padding:0 16px}
-h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(28px,7vw,44px);line-height:1.08;margin:6px 0;letter-spacing:-.01em}
-h2{font-size:17px;margin:0;font-weight:600}
-h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 0 8px;font-weight:600}
-.sub{color:var(--text-2);margin:0 0 16px;font-size:14px}
-.muted{color:var(--muted)}.fine{color:var(--muted);font-size:12.5px;margin:12px 0 0}
-a{color:var(--text-2)}
-.top{background:linear-gradient(180deg,#121a24 0%,var(--bg) 100%);border-bottom:1px solid var(--line);padding:22px 0 18px;margin-bottom:16px}
-.kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--err);animation:pulse 1.8s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(248,81,73,.6)}70%{box-shadow:0 0 0 8px rgba(248,81,73,0)}100%{box-shadow:0 0 0 0 rgba(248,81,73,0)}}
-.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
-.kpi-l{font-size:11.5px;color:var(--muted);line-height:1.25;display:block}
-.kpi-v{font-size:clamp(20px,5.5vw,28px);font-weight:700;display:block;margin-top:4px}
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --surface-2:#f6f8fb; --line:#d6dce4; --line-2:#e8ecf1;
+  --text:#1b2430; --text-2:#3d4a5c; --muted:#5f6b7a;
+  --navy:#0b2545; --navy-2:#13315c; --link:#1d4ed8;
+  --accent:#b45309; --stamp:#b3261e; --gold:#f2c94c;
+  --ok:#1a7f37; --err:#c0362c;
+  color-scheme:light;
+}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 "Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+a{color:var(--link)}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px}
+.muted{color:var(--muted)}.pl{font-size:12.5px;color:var(--muted)}
+.fine{color:var(--muted);font-size:12.5px;margin:12px 0 0}
+
+/* Bandeau supérieur */
+.util{background:#e9edf2;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2)}
+.util .wrap{display:flex;justify-content:space-between;gap:10px;padding-top:6px;padding-bottom:6px;flex-wrap:wrap}
+.util b{color:var(--stamp)}
+
+/* En-tête institutionnel */
+.inst{background:var(--surface);border-bottom:1px solid var(--line)}
+.inst .wrap{display:flex;align-items:center;gap:14px;padding-top:14px;padding-bottom:14px}
+.seal{width:62px;height:62px;flex:none}
+.inst-name{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-size:clamp(16px,4.2vw,21px);line-height:1.15;color:var(--navy)}
+.inst-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+.inst-badge{margin-left:auto;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--stamp);border:2px solid var(--stamp);border-radius:4px;padding:4px 8px;transform:rotate(-4deg);white-space:nowrap}
+
+/* Navigation */
+nav.main{background:var(--navy)}
+nav.main .wrap{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav.main a{color:#dbe4f0;text-decoration:none;font-size:13.5px;font-weight:600;padding:11px 12px;white-space:nowrap;border-bottom:3px solid transparent}
+nav.main a:hover,nav.main a:focus{color:#fff;border-bottom-color:var(--gold)}
+
+/* Titre de page */
+.crumbs{font-size:12.5px;color:var(--muted);margin:16px 0 6px}
+.crumbs a{color:var(--muted)}
+h1{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-size:clamp(26px,6.5vw,38px);line-height:1.12;margin:0 0 4px;color:var(--navy)}
+.tag{font-family:"Source Serif 4",Georgia,serif;font-style:italic;font-size:clamp(16px,4.2vw,20px);color:var(--text-2);margin:0 0 6px}
+.ast{color:var(--stamp);text-decoration:none;font-weight:700}
+.ref{font-size:12.5px;color:var(--muted);margin:0 0 14px}
+.ref span{display:inline-block;margin-right:12px}
+.satire{display:flex;gap:10px;align-items:flex-start;background:#fff8e6;border:1px solid #f0d58a;border-left:5px solid var(--gold);border-radius:6px;padding:10px 12px;font-size:13.5px;margin:0 0 14px}
+.satire b{color:#7a5300}
+
+/* Synthèse */
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.kpi{padding:12px 14px;min-width:0;border-right:1px solid var(--line-2)}
+.kpi:last-child{border-right:0}
+.kpi-l{font-size:11.5px;color:var(--muted);line-height:1.25;display:block;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.kpi-v{font-size:clamp(20px,5.5vw,28px);font-weight:800;display:block;margin-top:4px;color:var(--navy)}
 .kpi-n{font-size:11.5px;color:var(--muted);display:block}
-.stamp{margin-top:14px;font-size:13px;padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line)}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
-.head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-.badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;background:rgba(232,197,71,.14);color:var(--accent);border:1px solid rgba(232,197,71,.4)}
+.stamp-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:12px}
+.stamp{font-size:13px;color:var(--text-2)}
+.btn-r{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;border:0;border-radius:6px;padding:11px 16px;font:600 14px "Public Sans",sans-serif;cursor:pointer;min-height:44px}
+.btn-r:hover{background:var(--navy-2)}
+.btn-r svg{width:18px;height:18px}.btn-r.loading svg{animation:spin .9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.notice{margin-top:10px;font-size:13px;padding:9px 12px;border-radius:6px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--link)}
+.notice.ok{border-left-color:var(--ok)}.notice.err{border-left-color:var(--err)}
+.banner{margin-top:10px;font-size:13px;padding:10px 12px;border-radius:6px;background:#fff4e5;border:1px solid #f3c98b;border-left:4px solid var(--accent);color:#6b3a06}
+.com{margin-top:12px;padding:12px 14px;border-radius:6px;background:var(--navy);color:#eef3fa;font-size:14.5px;line-height:1.45;min-height:66px}
+.com-l{display:block;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+#comTxt{transition:opacity .35s}#comTxt.fade{opacity:0}
+
+/* Sections */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;margin:16px 0}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:2px solid var(--navy);padding-bottom:8px;margin-bottom:12px}
+.sec-h h2{font-family:"Source Serif 4",Georgia,serif;font-size:19px;margin:0;color:var(--navy)}
+.sec-h h2 .n{color:var(--stamp);margin-right:6px}
+.badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;background:#eef2f8;color:var(--navy-2);border:1px solid #cfd9e8;text-transform:uppercase;letter-spacing:.04em}
+.fig{font-size:12px;color:var(--muted);font-style:italic;margin:8px 0 0}
+h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 0 8px;font-weight:700}
+
+/* Hémicycle */
 #hemi{width:100%;max-width:560px;display:block;margin:0 auto}
-#hemi circle{cursor:pointer;transition:opacity .2s}#hemi circle.dim{opacity:.22}
-.hc{text-align:center;margin-top:4px}.hc b{font-size:clamp(22px,6vw,32px)}.hc div{font-size:12px;color:var(--muted)}
+#hemi circle{cursor:pointer;transition:opacity .2s}#hemi circle.dim{opacity:.18}
+.hc{text-align:center;margin-top:4px}.hc b{font-size:clamp(22px,6vw,32px);color:var(--navy)}.hc div{font-size:12px;color:var(--muted)}
 .tip{text-align:center;font-size:13px;color:var(--text-2);min-height:20px;margin-top:4px}
-.bar{position:relative;display:flex;gap:2px;height:22px;border-radius:6px;overflow:hidden;background:var(--surface-2)}
+.zero{display:flex;gap:14px;align-items:center;margin:14px 0 4px;padding:12px;border-radius:6px;background:#fbeeee;border:1px dashed var(--stamp)}
+.zero-n{font-size:34px;font-weight:800;line-height:1;white-space:nowrap;color:var(--stamp)}.zero-n span{font-size:15px;color:var(--muted);font-weight:500}
+.bar{position:relative;display:flex;gap:2px;height:22px;border-radius:4px;overflow:hidden;background:var(--line-2)}
 .bar .maj{position:absolute;top:0;bottom:0;width:2px;background:var(--text);left:calc(61/120*100%)}
 .blocs{list-style:none;padding:0;margin:10px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
-.blocs li{display:flex;align-items:center;gap:8px;font-size:13.5px}.blocs .sw{width:10px;height:10px;border-radius:3px;flex:none}.blocs .v{margin-left:auto;font-weight:600}
+.blocs li{display:flex;align-items:center;gap:8px;font-size:13.5px}.blocs .sw{width:10px;height:10px;border-radius:2px;flex:none}.blocs .v{margin-left:auto;font-weight:700}
+.arab{font-size:13px;color:var(--ok);margin:10px 0 0}
+
+/* Graphique */
 .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
-.leg{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:8px 10px;cursor:pointer;text-align:left;color:inherit;font:inherit;min-width:0}
-.leg.off{opacity:.4}.av{position:relative;overflow:hidden}.av .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%}.av-none{background:transparent;font-size:18px}
-.av{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;border:2px solid}
-.lt{min-width:0;flex:1}.ln{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.leg{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:8px 10px;cursor:pointer;text-align:left;color:inherit;font:inherit;min-width:0}
+.leg.off{opacity:.4}
+.av{position:relative;overflow:hidden;width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;border:2px solid}
+.av .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%;background:#fff}
+.av-none{background:transparent;font-size:18px}
+.lt{min-width:0;flex:1}.ln{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ll{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lv{font-size:20px;font-weight:700;white-space:nowrap}
+.lv{font-size:20px;font-weight:800;white-space:nowrap}
 #chart{width:100%;height:300px}
-.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}
-th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;padding:6px 6px 8px;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap}
-th.num,td.num{text-align:right}td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
-th.on{color:var(--text)}
-.pc{display:flex;align-items:center;gap:10px}.pc .sw{width:4px;align-self:stretch;border-radius:2px;flex:none}
-.pn{font-weight:600}.pl{font-size:12px;color:var(--muted)}
-.share{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:999px;background:var(--text);color:var(--bg);border:1px solid var(--text);font:600 14px Inter,sans-serif;cursor:pointer;text-decoration:none}
-.btn.ghost{background:transparent;color:var(--text);border-color:var(--line)}
-.btn.gold{background:var(--accent);border-color:var(--accent);color:#1a1500}
-.src li{margin-bottom:4px}.src{padding-left:18px;font-size:13.5px;color:var(--text-2)}
-.foot{color:var(--muted);font-size:12px;text-align:center;padding:8px 0 40px}
-.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:13.5px;z-index:10}
-@media (max-width:560px){.legend{grid-template-columns:1fr}.blocs{grid-template-columns:1fr}#chart{height:270px}.kpis{gap:6px}.kpi{padding:8px 9px}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-.btn-r{margin-top:12px;display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#1a1500;border:0;border-radius:999px;padding:11px 18px;font:600 14px Inter,sans-serif;cursor:pointer;min-height:44px}
-.btn-r svg{width:18px;height:18px}.btn-r.loading svg{animation:spin .9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-.notice{margin-top:10px;font-size:13px;padding:8px 12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line)}
-.notice.ok{border-color:rgba(63,185,80,.5)}.notice.err{border-color:rgba(248,81,73,.55)}
-.banner{margin-top:10px;font-size:13px;padding:10px 12px;border-radius:10px;background:rgba(210,153,34,.12);border:1px solid rgba(210,153,34,.5);color:#f2cc60}
-@media (max-width:560px){.btn-r{width:100%;justify-content:center}}
-.satire{display:inline-block;font-size:11.5px;font-weight:600;color:#1a1500;background:var(--accent);border-radius:6px;padding:3px 8px;margin:10px 0 2px}
-.tag{font-family:Fraunces,Georgia,serif;font-size:clamp(17px,4.6vw,22px);color:var(--text-2);margin:0 0 8px;font-style:italic}
-.ast{color:var(--accent);text-decoration:none;font-weight:700}
-.ast-note{color:var(--text-2);font-size:13px;margin:0 0 6px}
-.com{margin-top:12px;padding:12px 14px;border-radius:12px;background:#1d1a10;border:1px solid rgba(232,197,71,.35);font-size:14.5px;line-height:1.45;min-height:64px}
-.com-l{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
-#comTxt{transition:opacity .35s}#comTxt.fade{opacity:0}
-.zero{display:flex;gap:14px;align-items:center;margin:14px 0 4px;padding:12px;border-radius:12px;background:var(--surface-2);border:1px dashed #6e7681}
-.zero-n{font-size:34px;font-weight:700;line-height:1;white-space:nowrap}.zero-n span{font-size:15px;color:var(--muted);font-weight:500}
-.arab{font-size:13px;color:#7ee2a0;margin:10px 0 0}
+
+/* Coalition */
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{border:1px solid var(--line);background:var(--surface-2);color:var(--text);border-radius:999px;padding:7px 12px;font:500 13px Inter,sans-serif;cursor:pointer;display:inline-flex;gap:6px;align-items:center;min-height:36px}
-.chip i{width:9px;height:9px;border-radius:50%;display:inline-block}
-.chip.on{border-color:var(--text);background:#2a323d}
-.cbar{position:relative;height:14px;border-radius:7px;background:var(--surface-2);margin-top:14px;overflow:hidden}
+.chip{border:1px solid var(--line);background:var(--surface-2);color:var(--text);border-radius:4px;padding:7px 11px;font:500 13px "Public Sans",sans-serif;cursor:pointer;display:inline-flex;gap:6px;align-items:center;min-height:36px}
+.chip i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.chip.on{border-color:var(--navy);background:#e7eef8;font-weight:700}
+.cbar{position:relative;height:14px;border-radius:4px;background:var(--line-2);margin-top:14px;overflow:hidden}
 .cbar #cFill{height:100%;width:0;background:var(--accent);transition:width .4s,background .4s}
 .cbar .maj{position:absolute;top:0;bottom:0;width:2px;background:var(--text);left:calc(61/120*100%)}
-.ctot{margin-top:6px;font-size:14px}.ctot b{font-size:20px}
-.cmsg{margin-top:8px;font-size:14.5px;color:var(--text-2);min-height:42px}
-.link{background:none;border:0;color:var(--accent);font:600 13px Inter,sans-serif;cursor:pointer}
+.ctot{margin-top:6px;font-size:14px}.ctot b{font-size:20px;color:var(--navy)}
+.cmsg{margin-top:8px;font-size:14.5px;color:var(--text-2);min-height:42px;font-style:italic}
+.link{background:none;border:0;color:var(--link);font:600 13px "Public Sans",sans-serif;cursor:pointer}
+
+/* Tableau */
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-2);font-weight:700;padding:8px 6px;background:#eef2f6;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap}
+th.num,td.num{text-align:right}td{padding:9px 6px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+tbody tr:nth-child(even){background:#fafbfd}
+th.on{color:var(--navy);text-decoration:underline}
+.pc{display:flex;align-items:center;gap:10px}.pc .sw{width:4px;align-self:stretch;border-radius:2px;flex:none}
+.pn{font-weight:600}
+
+/* Partage, sources, pied de page */
+.share{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:6px;background:var(--navy);color:#fff;border:1px solid var(--navy);font:600 14px "Public Sans",sans-serif;cursor:pointer;text-decoration:none}
+.btn.ghost{background:#fff;color:var(--navy);border-color:var(--line)}
+.src{padding-left:18px;font-size:13.5px;color:var(--text-2)}.src li{margin-bottom:4px}
+footer.foot{background:var(--navy);color:#cbd6e6;margin-top:24px;padding:22px 0 34px;font-size:12.5px}
+footer.foot .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:14px}
+footer.foot h4{color:#fff;font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
+footer.foot p{margin:0 0 4px}
+.ast-note{color:var(--gold)!important;font-size:13px}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:6px;font-weight:600;font-size:13.5px;z-index:10}
+@media (max-width:620px){
+  .legend{grid-template-columns:1fr}.blocs{grid-template-columns:1fr}#chart{height:270px}
+  .kpis{grid-template-columns:1fr 1fr}.kpi:nth-child(2){border-right:0}.kpi:last-child{grid-column:1/-1;border-top:1px solid var(--line-2)}
+  .inst-badge{display:none}.btn-r{width:100%;justify-content:center}
+  footer.foot .cols{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap">
-  <div class="kicker"><span class="dot"></span>Dépouillement en cours</div>
-  <div class="satire">Site satirique et engagé — les chiffres sont vrais, le ton est assumé.</div>
-  <h1>Élections israéliennes 2026</h1>
-  <p class="tag">La seule démocratie du Moyen-Orient<a href="#asterisque" class="ast">*</a></p>
-  <p class="sub">26<sup>e</sup> Knesset · scrutin du mardi 27 octobre 2026 · 120 sièges, majorité à 61</p>
-  <div class="kpis">
-    <div class="kpi"><span class="kpi-l">Avancement</span><span class="kpi-v" id="kProg"></span><span class="kpi-n" id="kProgN"></span></div>
-    <div class="kpi"><span class="kpi-l">Suffrages valides comptés</span><span class="kpi-v" id="kValid"></span><span class="kpi-n">participation finale 77,7 %</span></div>
-    <div class="kpi"><span class="kpi-l">Sièges estimés</span><span class="kpi-v">120</span><span class="kpi-n">sur 120, selon les voix comptées</span></div>
+<div class="util"><div class="wrap"><span>Portail d'information électorale · <b>version satirique, non officielle</b></span><span>Français · <span aria-hidden="true">עברית</span> <span class="muted">(bientôt, ou pas)</span></span></div></div>
+
+<header class="inst"><div class="wrap">
+  <svg class="seal" viewBox="0 0 100 100" role="img" aria-label="Sceau fictif de l'Observatoire">
+    <defs><path id="sealArc" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"/></defs>
+    <circle cx="50" cy="50" r="48" fill="#0b2545"/><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c94c" stroke-width="1.5"/>
+    <circle cx="50" cy="50" r="28" fill="#13315c" stroke="#f2c94c" stroke-width="1"/>
+    <text font-family="Public Sans,sans-serif" font-size="7.2" font-weight="700" fill="#f2c94c" letter-spacing="1.1"><textPath href="#sealArc" startOffset="2%">OBSERVATOIRE · DÉMOCRATIE · GÉOMÉTRIE VARIABLE ·</textPath></text>
+    <rect x="37" y="44" width="26" height="18" rx="2" fill="#f3f5f8"/><rect x="44" y="36" width="12" height="11" fill="#fff" stroke="#0b2545" stroke-width="1"/>
+    <rect x="42" y="46" width="16" height="2.4" rx="1" fill="#0b2545"/>
+    <text x="50" y="71" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="6.5" font-weight="800" fill="#f2c94c">61 / 120</text>
+  </svg>
+  <div>
+    <div class="inst-name">Observatoire de la Démocratie<br>à Géométrie Variable</div>
+    <div class="inst-sub">Département du décompte sélectif · Bureau des majorités introuvables</div>
   </div>
-  <div class="com" id="com" aria-live="polite"><span class="com-l">Le commentateur</span><span id="comTxt"></span></div>
-  <div class="stamp">Dernier relevé : <strong id="kTime"></strong><br><span class="muted" id="kCheck"></span></div>
-  <button class="btn-r" id="bRefresh" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Actualiser les résultats</button>
-  <div class="notice" id="notice" role="status" aria-live="polite" hidden></div>
-  <div class="banner" id="banner" hidden></div>
+  <div class="inst-badge">PARODIE</div>
 </div></header>
 
+<nav class="main" aria-label="Navigation principale"><div class="wrap">
+  <a href="#synthese">Synthèse</a><a href="#sieges">Sièges</a><a href="#evolution">Évolution</a><a href="#coalition">Coalitions</a><a href="#resultats">Résultats par liste</a><a href="#methode">Méthodologie</a>
+</div></nav>
+
 <main class="wrap">
-  <section class="card">
-    <div class="head"><h2>Répartition des sièges</h2><span class="badge">Résultats partiels</span></div>
+  <div class="crumbs"><a href="#">Accueil</a> › <a href="#">Élections</a> › <a href="#">26<sup>e</sup> Knesset</a> › Résultats provisoires</div>
+  <h1>Élections israéliennes 2026</h1>
+  <p class="tag">La seule démocratie du Moyen-Orient<a href="#asterisque" class="ast">*</a></p>
+  <p class="ref"><span>Communiqué n° ODGV/26K/2026</span><span>Scrutin du mardi 27 octobre 2026</span><span>120 sièges · majorité absolue : 61</span></p>
+  <div class="satire" role="note"><span aria-hidden="true">⚠️</span><div><b>Avis au public :</b> site satirique et engagé. Les chiffres sont vrais et sourcés ; l'Observatoire, son sceau et son ton sont fictifs. Aucun lien avec la Commission électorale centrale d'Israël.</div></div>
+
+  <section id="synthese">
+    <div class="kpis">
+      <div class="kpi"><span class="kpi-l">Avancement</span><span class="kpi-v" id="kProg"></span><span class="kpi-n" id="kProgN"></span></div>
+      <div class="kpi"><span class="kpi-l">Suffrages valides comptés</span><span class="kpi-v" id="kValid"></span><span class="kpi-n">participation finale 77,7 %</span></div>
+      <div class="kpi"><span class="kpi-l">Sièges estimés</span><span class="kpi-v">120</span><span class="kpi-n">selon les voix déjà comptées</span></div>
+    </div>
+    <div class="stamp-row">
+      <div class="stamp">Dernier relevé : <strong id="kTime"></strong><br><span class="muted" id="kCheck"></span></div>
+      <button class="btn-r" id="bRefresh" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Actualiser les résultats</button>
+    </div>
+    <div class="notice" id="notice" role="status" aria-live="polite" hidden></div>
+    <div class="banner" id="banner" hidden></div>
+    <div class="com" id="com" aria-live="polite"><span class="com-l">Commentaire officiel de l'Observatoire</span><span id="comTxt"></span></div>
+  </section>
+
+  <section class="card" id="sieges">
+    <div class="sec-h"><h2><span class="n">1.</span>Répartition des sièges</h2><span class="badge">Résultats partiels</span></div>
     <svg id="hemi" viewBox="0 0 400 205" role="img" aria-label="Hémicycle de la Knesset"></svg>
     <div class="hc"><b id="hBig"></b><div>Bloc Netanyahou · Opposition — majorité 61</div></div>
     <div class="tip" id="tip">Touchez un siège pour voir le parti</div>
+    <p class="fig">Figure 1 — Hémicycle de la Knesset, sièges estimés au dernier relevé.</p>
     <div class="zero"><div class="zero-n">0<span> / 120</span></div><div><b>Sièges représentant les Palestiniens de Cisjordanie et de Gaza</b><div class="pl">Près de 5 millions de Palestiniens des territoires occupés ne votent pas aux législatives israéliennes. Les colons israéliens de Cisjordanie, eux, votent.</div></div></div>
     <h3>Par bloc politique</h3>
     <div class="bar" id="bar"></div>
@@ -139,47 +223,58 @@ th.on{color:var(--text)}
     <p class="fine">Les blocs sont un regroupement politique repris de la presse (France 24, Arutz Sheva), pas un résultat officiel.</p>
   </section>
 
-  <section class="card">
-    <div class="head"><h2>Likoud, Yashar! et partis arabes</h2></div>
+  <section class="card" id="evolution">
+    <div class="sec-h"><h2><span class="n">2.</span>Likoud, Yashar! et partis arabes</h2><span class="badge">Évolution</span></div>
     <div class="legend" id="legend"></div>
     <div id="chart" aria-label="Évolution des sièges estimés pendant le dépouillement"></div>
-    <p class="fine">Les deux premières listes non arabes et le total des partis arabes (Liste unifiée + Ra'am). Sièges estimés à chaque point publié du dépouillement (heure d'Israël). Chaque point est un relevé daté et sourcé : relevés publiés par la presse (mis à jour chaque heure) et, quand la Commission les laisse passer, relevés officiels collectés automatiquement ; aucun point intermédiaire n'est ajouté. Les médias expriment l'avancement tantôt en voix, tantôt en bureaux, d'où des pourcentages non strictement croissants. Touchez une carte pour masquer ou afficher une courbe.</p>
+    <p class="fig">Figure 2 — Sièges estimés au fil du dépouillement (heure d'Israël).</p>
+    <p class="fine">Les deux premières listes non arabes et le total des partis arabes (Liste unifiée + Ra'am). Chaque point est un relevé daté et sourcé : relevés publiés par la presse à partir des comptes de la Commission électorale, ajoutés automatiquement toutes les 15 minutes ; aucun point intermédiaire n'est ajouté. Les sources expriment l'avancement tantôt en voix, tantôt en bureaux. Touchez une carte pour masquer ou afficher une courbe.</p>
   </section>
 
-  <section class="card">
-    <div class="head"><h2>Fabrique ta coalition</h2><button type="button" class="link" id="cReset">Tout effacer</button></div>
-    <p class="pl" style="margin:0 0 10px">Touchez les partis pour assembler 61 sièges (sièges du dernier relevé).</p>
+  <section class="card" id="coalition">
+    <div class="sec-h"><h2><span class="n">3.</span>Fabrique ta coalition</h2><button type="button" class="link" id="cReset">Tout effacer</button></div>
+    <p class="pl" style="margin:0 0 10px">Formulaire CERFA n° 61/120 — touchez les partis pour assembler une majorité (sièges du dernier relevé).</p>
     <div class="chips" id="chips"></div>
     <div class="cbar"><div id="cFill"></div><span class="maj"></span></div>
     <div class="ctot"><b id="cSum">0</b> / 61 sièges</div>
     <div class="cmsg" id="cMsg">Le casting est ouvert. Bonne chance.</div>
   </section>
 
-  <section class="card">
-    <div class="head"><h2>Résultats par liste</h2><span class="muted" style="font-size:12.5px">Toucher un en-tête pour trier</span></div>
+  <section class="card" id="resultats">
+    <div class="sec-h"><h2><span class="n">4.</span>Résultats par liste</h2><span class="pl">Toucher un en-tête pour trier</span></div>
     <div class="tw"><table>
       <thead><tr><th>Liste</th><th class="num" data-s="pct">% voix</th><th class="num on" data-s="seats">Sièges</th><th class="num">Évol.</th></tr></thead>
       <tbody id="tb"></tbody>
     </table></div>
-    <p class="fine">Sièges estimés sur les voix déjà comptées (seuil 3,25 %) : ils évolueront jusqu'à la proclamation officielle, attendue le 4 novembre 2026. « Évol. » : variation de sièges par rapport au relevé précédent. « n.d. » : donnée non publiée dans la source.</p>
+    <p class="fig">Tableau 1 — Résultats provisoires par liste.</p>
+    <p class="fine">Sièges estimés sur les voix déjà comptées (seuil 3,25 %, méthode Bader-Ofer) : ils évolueront jusqu'à la proclamation officielle, attendue le 4 novembre 2026. « Évol. » : variation de sièges par rapport au relevé précédent. « n.d. » : donnée non publiée dans la source.</p>
   </section>
 
-  <section class="card">
-    <h2>Partager</h2>
+  <section class="card" id="partager">
+    <div class="sec-h"><h2><span class="n">5.</span>Diffusion du communiqué</h2></div>
     <div class="share">
-      <button class="btn gold" id="bShare" type="button">Partager</button>
+      <button class="btn" id="bShare" type="button">Partager</button>
       <button class="btn ghost" id="bCopy" type="button">Copier le lien</button>
       <a class="btn ghost" id="bWa" target="_blank" rel="noopener">WhatsApp</a>
       <a class="btn ghost" id="bFb" target="_blank" rel="noopener">Facebook</a>
     </div>
   </section>
 
-  <section class="card">
-    <h2>Sources</h2>
+  <section class="card" id="methode">
+    <div class="sec-h"><h2><span class="n">6.</span>Sources et méthodologie</h2></div>
     <ul class="src" id="src"></ul>
   </section>
-  <footer class="foot"><p id="asterisque" class="ast-note">* Offre soumise à conditions. Non valable en Cisjordanie ni à Gaza.</p>Page indépendante et satirique, sans publicité ni collecte de données. Chiffres réels, partiels et susceptibles d'évoluer.</footer>
 </main>
+
+<footer class="foot"><div class="wrap">
+  <div class="cols">
+    <div><h4>Mentions légales</h4><p>Observatoire fictif, site satirique et indépendant.</p><p>Sans publicité ni collecte de données.</p></div>
+    <div><h4>Accessibilité</h4><p>Conforme pour les électeurs inscrits.</p><p>Partiellement conforme pour les autres.</p></div>
+    <div><h4>Nous contacter</h4><p>Par pigeon voyageur, sous réserve de checkpoint.</p></div>
+  </div>
+  <p id="asterisque" class="ast-note">* Offre soumise à conditions. Non valable en Cisjordanie ni à Gaza.</p>
+  <p>Chiffres réels, partiels et susceptibles d'évoluer, issus des comptes de la Commission électorale centrale relayés par la presse.</p>
+</div></footer>
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -297,15 +392,16 @@ async function load(){
 }
 
 function render(){
-  $("kProg").textContent = CUR.progressLabel;
-  $("kProgN").textContent = CUR.progressNote;
+  const pm = /^(≈?\s*[\d.,]+\s*%)\s*(.*)$/.exec(CUR.progressLabel || "");
+  $("kProg").textContent = pm ? pm[1] : CUR.progressLabel;
+  $("kProgN").textContent = pm && pm[2] ? `${pm[2]} (${CUR.progressNote})` : CUR.progressNote;
   $("kValid").textContent = CUR.valid == null ? "n.d." : nf.format(CUR.valid);
   $("kTime").textContent = `${dhm(CUR.time)} (heure d'Israël) — ${SOURCES[CUR.src].label.split(" — ")[0]}`;
   const b = $("banner"); const msgs = [];
   if (STATUS) {
     $("kCheck").textContent = `Collecte automatique : dernière vérification de la source ${ago(STATUS.lastCheckAt)}.`;
     if (["blocked","http","network","format","incoherent","empty"].includes(STATUS.status))
-      msgs.push(`Lecture directe de la Commission électorale bloquée (protection anti-robot). Les chiffres affichés viennent des relevés publiés par la presse, mis à jour chaque heure.`);
+      msgs.push(`Lecture directe de la Commission électorale bloquée (protection anti-robot). Les chiffres affichés viennent des relevés de la Commission relayés par la presse, ajoutés automatiquement toutes les 15 minutes.`);
     if (STATUS.status === "waiting") msgs.push(STATUS.message);
     if (STATUS.lastCheckAt && Date.now() - Date.parse(STATUS.lastCheckAt) > 40*60000) msgs.push("La collecte automatique ne s'est pas exécutée depuis plus de 40 minutes : données potentiellement obsolètes.");
   } else {
@@ -326,7 +422,7 @@ function hemicycle(){
     const pts=[]; radii.forEach((r,i)=>{for(let j=0;j<counts[i];j++){const a=Math.PI-Math.PI*j/(counts[i]-1);pts.push({x:cx+r*Math.cos(a),y:cy-r*Math.sin(a),a})}});
     pts.sort((p,q)=>q.a-p.a);
     const rad=Math.min(dr*.42,7.5);
-    svg.innerHTML=pts.map((p,i)=>`<circle data-i="${i}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${rad.toFixed(1)}" fill="#2a323d"></circle>`).join("");
+    svg.innerHTML=pts.map((p,i)=>`<circle data-i="${i}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${rad.toFixed(1)}" fill="#d9dee5"></circle>`).join("");
     const show=e=>{const c=e.target.closest("circle");if(!c)return;const p=SEQ[+c.dataset.i];
       svg.querySelectorAll("circle").forEach(el=>el.classList.toggle("dim",SEQ[+el.dataset.i]!==p));
       $("tip").textContent=p?`${p.name} — ${p.leader} : ${p.seats} sièges`:"Siège non attribué";};
@@ -334,7 +430,7 @@ function hemicycle(){
     svg.addEventListener("pointerleave",()=>svg.querySelectorAll("circle").forEach(el=>el.classList.remove("dim")));
   }
   SEQ=[]; ["arab","opp","other","coal"].forEach(b=>CUR.parties.filter(p=>p.bloc===b&&p.seats).sort((x,y)=>b==="coal"?x.seats-y.seats:y.seats-x.seats).forEach(p=>{for(let i=0;i<p.seats;i++)SEQ.push(p)}));
-  svg.querySelectorAll("circle").forEach((c,i)=>c.setAttribute("fill",SEQ[i]?SEQ[i].color:"#2a323d"));
+  svg.querySelectorAll("circle").forEach((c,i)=>c.setAttribute("fill",SEQ[i]?SEQ[i].color:"#d9dee5"));
   const tot={coal:0,opp:0,arab:0,other:0}; CUR.parties.forEach(p=>tot[p.bloc]=(tot[p.bloc]||0)+p.seats);
   $("hBig").textContent=`${tot.coal} · ${tot.opp}`;
   $("bar").innerHTML=["coal","opp","arab"].map(k=>`<div style="width:${tot[k]/120*100}%;background:${BLOCS[k].color}"></div>`).join("")+`<span class="maj" title="Majorité : 61"></span>`;
@@ -363,15 +459,15 @@ function draw(){
     animationDuration:700,
     grid:{left:34,right:40,top:14,bottom:30},
     legend:{show:false,selected:Object.fromEntries(TOP3.map(id=>[P(id).name,!hidden.has(id)]))},
-    tooltip:{trigger:"axis",backgroundColor:"#0d1117",borderColor:"#2a323d",textStyle:{color:"#f0efec",fontSize:12},
+    tooltip:{trigger:"axis",backgroundColor:"#ffffff",borderColor:"#d6dce4",textStyle:{color:"#1b2430",fontSize:12},
       formatter:items=>{if(!items.length)return"";const pt=POINTS[items[0].dataIndex];
-        return `<b>${hm(pt.t)}</b> · ${pt.prog}<br><span style="color:#8b949e">${SOURCES[pt.src].label.split(" — ")[0]}</span>`+
+        return `<b>${hm(pt.t)}</b> · ${pt.prog}<br><span style="color:#5f6b7a">${SOURCES[pt.src].label.split(" — ")[0]}</span>`+
           items.map(it=>`<br><span style="display:inline-block;width:10px;height:2px;background:${it.color};vertical-align:middle;margin-right:6px"></span>${it.seriesName} : <b>${it.value[1]} sièges</b>`).join("");}},
-    xAxis:{type:"time",minInterval:1800000,axisLabel:{color:"#8b949e",hideOverlap:true,formatter:v=>hm(v)},axisLine:{lineStyle:{color:"#2a323d"}},splitLine:{show:false}},
-    yAxis:{type:"value",min:0,max:Math.ceil(ymax/5)*5,interval:5,axisLabel:{color:"#8b949e"},splitLine:{lineStyle:{color:"#222a33"}}},
+    xAxis:{type:"time",minInterval:1800000,axisLabel:{color:"#5f6b7a",hideOverlap:true,formatter:v=>hm(v)},axisLine:{lineStyle:{color:"#c5ccd6"}},splitLine:{show:false}},
+    yAxis:{type:"value",min:0,max:Math.ceil(ymax/5)*5,interval:5,axisLabel:{color:"#5f6b7a"},splitLine:{lineStyle:{color:"#e6e9ee"}}},
     series:TOP3.map(id=>({name:P(id).name,type:"line",symbolSize:POINTS.length>20?6:9,showSymbol:true,
-      lineStyle:{width:2,color:P(id).color},itemStyle:{color:P(id).color,borderColor:"#161b22",borderWidth:2},
-      endLabel:{show:true,formatter:d=>d.value[1],color:"#f0efec",fontWeight:600},
+      lineStyle:{width:2,color:P(id).color},itemStyle:{color:P(id).color,borderColor:"#ffffff",borderWidth:2},
+      endLabel:{show:true,formatter:d=>d.value[1],color:"#1b2430",fontWeight:700},
       data:POINTS.map(pt=>[pt.t,pt.seats[id]??null])}))
   },{replaceMerge:["series"]});
 }
