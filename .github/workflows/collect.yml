@@ -42,7 +42,7 @@ jobs:
             [ "$i" -lt 23 ] && sleep 900
           done
       - name: Relancer la collecte (jusqu'au 5 novembre 2026)
-        if: always()
+        if: ${{ !cancelled() }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
