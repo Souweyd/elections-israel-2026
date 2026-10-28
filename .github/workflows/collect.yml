@@ -2,7 +2,7 @@ name: Collecte des résultats (CEC)
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # toutes les 5 minutes (GitHub peut retarder de quelques minutes)
+    - cron: "*/15 * * * *"  # toutes les 15 minutes (GitHub peut retarder de quelques minutes)
   workflow_dispatch: {}      # lancement manuel : onglet Actions → Run workflow
   push:                      # passage immédiat à chaque mise à jour du site (hors données)
     branches: [main]

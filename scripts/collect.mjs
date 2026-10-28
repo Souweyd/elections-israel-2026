@@ -80,6 +80,72 @@ function buildSnapshot(agg, fetchedAt, lastModified) {
   };
 }
 
+
+// ───────── Secours : The Petek (relaie les comptes de la CEC ; robots.txt : Allow /) ─────────
+const PETEK_URL = "https://www.thepetek.com/results";
+const PETEK_IDS = { likud: "likud", yashar: "yashar", jointlist: "joint", beyachad: "ensemble", utj: "utj", democrats: "dem",
+  beiteinu: "yb", shas: "shas", otzma: "otzma", rz: "rzp", raam: "raam", noam: "noam",
+  "reservists-economic": "reserv", "amcha-israel": "amcha" };
+const COAL = ["likud", "otzma", "shas", "utj", "rzp", "noam"], OPP = ["yashar", "ensemble", "dem", "yb"], ARAB = ["joint", "raam"];
+
+function israelIso(hhmm, now = new Date()) {
+  // Date du jour en Israël + heure annoncée ; si l'heure obtenue est dans le futur, c'est la veille.
+  const day = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jerusalem" }).format(now); // AAAA-MM-JJ
+  const off = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Jerusalem", timeZoneName: "longOffset" })
+    .formatToParts(now).find((x) => x.type === "timeZoneName").value.replace("GMT", "") || "+00:00";
+  const [h, m] = hhmm.split(":").map(Number);
+  let iso = `${day}T${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:00${off}`;
+  if (Date.parse(iso) - now.getTime() > 10 * 60_000) iso = new Date(Date.parse(iso) - 86_400_000).toISOString();
+  return iso;
+}
+
+export function parsePetek(html, now = new Date()) {
+  const s = html.replace(/\\"/g, '"');
+  const desc = (s.match(/<meta name="description" content="([^"]+)"/) || [])[1] || "";
+  const pm = desc.match(/([\d.]+)% of ballots counted at (\d{1,2}:\d{2})/);
+  if (!pm) throw new Error("avancement ou heure introuvable");
+  // La page contient plusieurs objets « seats » (résultats et sondages) : on retient celui dont
+  // les totaux par bloc correspondent exactement à ceux annoncés dans la description de la page.
+  const bm = desc.match(/Netanyahu bloc \w+ the Change bloc (\d+) to (\d+), with (\d+)/);
+  if (!bm) throw new Error("totaux par bloc introuvables (contrôle impossible)");
+  let seats = null;
+  for (const m of s.matchAll(/"seats":\{([^}]*)\}/g)) {
+    let raw; try { raw = JSON.parse(`{${m[1]}}`); } catch { continue; }
+    const cand = {}; let ok = true;
+    for (const [k, v] of Object.entries(raw)) { const id = PETEK_IDS[k]; if (!id || typeof v !== "number") { ok = false; break; } cand[id] = v; }
+    if (!ok) continue;
+    const sum = (ids) => ids.reduce((a, id) => a + (cand[id] || 0), 0);
+    const total = Object.values(cand).reduce((a, b) => a + b, 0);
+    if (total === 120 && sum(COAL) === +bm[1] && sum(OPP) === +bm[2] && sum(ARAB) === +bm[3]) { seats = cand; break; }
+  }
+  if (!seats) throw new Error("aucune répartition cohérente avec les totaux par bloc annoncés");
+  const vm = s.match(/valid votes counted<\/dt><dd[^>]*>([\d,]+)</);
+  return {
+    t: israelIso(pm[2], now),
+    prog: `${pm[1].replace(".", ",")} % des bulletins`,
+    source: { label: "The Petek — chiffres de la Commission électorale centrale (collecte automatique)", url: PETEK_URL },
+    full: true,
+    ...(vm ? { valid: Number(vm[1].replace(/,/g, "")) } : {}),
+    seats,
+  };
+}
+
+async function fromPetek() {
+  try {
+    const res = await fetch(PETEK_URL, { headers: { "User-Agent": UA } });
+    if (!res.ok) return `The Petek : HTTP ${res.status}`;
+    const pt = parsePetek(await res.text());
+    const press = await readJson("data/press.json", { points: [] });
+    const last = press.points[press.points.length - 1];
+    if (last && Date.parse(pt.t) <= Date.parse(last.t)) return "The Petek : pas de relevé plus récent";
+    press.points.push(pt);
+    await writeFile("data/press.json", JSON.stringify(press, null, 1) + "\n");
+    return `The Petek : relevé ${pt.t} ajouté (${pt.prog})`;
+  } catch (e) {
+    return `The Petek : relevé ignoré (${e.message})`;
+  }
+}
+
 async function main() {
   const now = new Date().toISOString();
   const status = await readJson("data/status.json", {});
@@ -126,6 +192,7 @@ async function main() {
     await writeJson("data/status.json", out);
   }
   console.log(`[${now}] ${next.status}${next.message ? " — " + next.message : ""}`);
+  if (next.status !== "new" && next.status !== "unchanged") console.log(await fromPetek());
 }
 
-await main();
+if (process.argv[1] && process.argv[1].endsWith('collect.mjs')) await main();
