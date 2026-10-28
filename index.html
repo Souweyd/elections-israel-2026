@@ -143,7 +143,7 @@ th.on{color:var(--text)}
     <div class="head"><h2>Likoud, Yashar! et partis arabes</h2></div>
     <div class="legend" id="legend"></div>
     <div id="chart" aria-label="Évolution des sièges estimés pendant le dépouillement"></div>
-    <p class="fine">Les deux premières listes non arabes et le total des partis arabes (Liste unifiée + Ra'am). Sièges estimés à chaque point publié du dépouillement (heure d'Israël). Chaque point est un relevé daté et sourcé : relevés de presse jusqu'à 09:17, puis relevés officiels collectés automatiquement toutes les 5 minutes ; aucun point intermédiaire n'est ajouté. Les médias expriment l'avancement tantôt en voix, tantôt en bureaux, d'où des pourcentages non strictement croissants. Touchez une carte pour masquer ou afficher une courbe.</p>
+    <p class="fine">Les deux premières listes non arabes et le total des partis arabes (Liste unifiée + Ra'am). Sièges estimés à chaque point publié du dépouillement (heure d'Israël). Chaque point est un relevé daté et sourcé : relevés publiés par la presse (mis à jour chaque heure) et, quand la Commission les laisse passer, relevés officiels collectés automatiquement ; aucun point intermédiaire n'est ajouté. Les médias expriment l'avancement tantôt en voix, tantôt en bureaux, d'où des pourcentages non strictement croissants. Touchez une carte pour masquer ou afficher une courbe.</p>
   </section>
 
   <section class="card">
@@ -241,27 +241,52 @@ let STATUS = null, lastKey = null;
 
 async function getJSON(path){ const r = await fetch(`${path}?t=${Date.now()}`, { cache:"no-store" }); if(!r.ok) throw new Error(r.status); return r.json(); }
 
+const META = Object.fromEntries(LATEST.parties.map(p=>[p.id,p]));
+function srcKey(src){ const k=src.url; if(!SOURCES[k]) SOURCES[k]={ label:src.label, url:src.url }; return k; }
 async function load(){
-  let latest=null, hist=[], st=null;
+  let latest=null, hist=[], st=null, press=null;
   try { st = await getJSON("data/status.json"); } catch {}
   try { latest = await getJSON("data/latest.json"); hist = await getJSON("data/history.json"); } catch {}
+  try { press = await getJSON("data/press.json"); } catch {}
   STATUS = st;
-  if (latest && Date.parse(latest.fetchedAt) > Date.parse(LATEST.time)) {
+
+  // Relevés de presse (fichier de données ; repli sur les relevés intégrés à la page)
+  const pts = (press && Array.isArray(press.points) && press.points.length)
+    ? press.points.filter(p=>p && p.t && p.seats && p.source && p.source.url).sort((x,y)=>Date.parse(x.t)-Date.parse(y.t))
+    : null;
+  let pressPoints, pressCur = null;
+  if (pts) {
+    pressPoints = pts.map(p => ({ t:p.t, prog:p.prog||"", src:srcKey(p.source),
+      seats:{ ...p.seats, arab: p.seats.arab ?? ((p.seats.joint||0)+(p.seats.raam||0)) } }));
+    const full = pts.filter(p => p.full && Object.values(p.seats).reduce((a,b)=>a+b,0) === 120);
+    const last = full[full.length-1], before = full[full.length-2];
+    if (last) {
+      const ids = new Set([...Object.keys(last.seats), ...Object.keys(last.pct||{})]);
+      pressCur = { time:last.t, progressLabel:last.prog||"n.d.", progressNote:"source presse", valid:last.valid ?? null, src:srcKey(last.source),
+        parties:[...ids].filter(id=>META[id]).map(id => ({ ...META[id], seats:last.seats[id] ?? 0,
+          pct: last.pct?.[id] ?? null, votes: last.votes?.[id] ?? null,
+          prev: before ? (before.seats[id] ?? 0) : (last.seats[id] ?? 0) })) };
+    }
+  } else {
+    pressPoints = TREND.map(p => ({ t:p.t, prog:p.prog, src:p.src, seats:{ likud:p.likud, yashar:p.yashar, arab:p.arab } }));
+  }
+  if (pressCur) CUR = pressCur;
+
+  // Relevés officiels collectés automatiquement (si la Commission les laisse passer)
+  if (latest && Date.parse(latest.fetchedAt) > Date.parse(CUR.time)) {
     const prev = hist.length > 1 ? hist[hist.length-2].seats : null;
-    const prevPress = Object.fromEntries(LATEST.parties.map(p=>[p.id,p.seats]));
+    const prevSeats = Object.fromEntries(CUR.parties.map(p=>[p.id,p.seats]));
     CUR = {
       time: latest.fetchedAt,
       progressLabel: latest.progress == null ? "n.d." : `≈ ${pf(latest.progress)}`,
       progressNote: "des votants (estimation)",
       valid: latest.totals.valid, src: "cec",
       parties: latest.parties.filter(p => p.votes > 0 || p.seats > 0)
-        .map(p => ({ ...p, prev: prev ? (prev[p.id] ?? 0) : (prevPress[p.id] ?? p.seats) })),
+        .map(p => ({ ...p, prev: prev ? (prev[p.id] ?? 0) : (prevSeats[p.id] ?? p.seats) })),
     };
   }
-  const press = TREND.map(p => ({ t:p.t, prog:p.prog, src:p.src, seats:{ likud:p.likud, yashar:p.yashar, arab:p.arab } }));
-  const cec = hist.filter(h => Date.parse(h.t) > Date.parse(LATEST.time))
-    .map(h => ({ t:h.t, prog: h.progress == null ? "avancement n.d." : `≈ ${pf(h.progress)} des votants (estimation)`, src:"cec", seats:{ ...h.seats, arab:(h.seats.joint||0)+(h.seats.raam||0) } }));
-  POINTS = press.concat(cec);
+  const cec = hist.map(h => ({ t:h.t, prog: h.progress == null ? "avancement n.d." : `≈ ${pf(h.progress)} des votants (estimation)`, src:"cec", seats:{ ...h.seats, arab:(h.seats.joint||0)+(h.seats.raam||0) } }));
+  POINTS = pressPoints.concat(cec).sort((x,y)=>Date.parse(x.t)-Date.parse(y.t));
   const key = CUR.time + "|" + POINTS.length;
   const isNew = lastKey !== null && key !== lastKey;
   lastKey = key;
@@ -272,13 +297,13 @@ async function load(){
 function render(){
   $("kProg").textContent = CUR.progressLabel;
   $("kProgN").textContent = CUR.progressNote;
-  $("kValid").textContent = nf.format(CUR.valid);
+  $("kValid").textContent = CUR.valid == null ? "n.d." : nf.format(CUR.valid);
   $("kTime").textContent = `${dhm(CUR.time)} (heure d'Israël) — ${SOURCES[CUR.src].label.split(" — ")[0]}`;
   const b = $("banner"); const msgs = [];
   if (STATUS) {
     $("kCheck").textContent = `Collecte automatique : dernière vérification de la source ${ago(STATUS.lastCheckAt)}.`;
     if (["blocked","http","network","format","incoherent","empty"].includes(STATUS.status))
-      msgs.push(`La collecte automatique n'a pas pu lire la source officielle : ${STATUS.message} Les derniers chiffres vérifiés restent affichés.`);
+      msgs.push(`Lecture directe de la Commission électorale bloquée (protection anti-robot). Les chiffres affichés viennent des relevés publiés par la presse, mis à jour chaque heure.`);
     if (STATUS.status === "waiting") msgs.push(STATUS.message);
     if (STATUS.lastCheckAt && Date.now() - Date.parse(STATUS.lastCheckAt) > 40*60000) msgs.push("La collecte automatique ne s'est pas exécutée depuis plus de 40 minutes : données potentiellement obsolètes.");
   } else {
