@@ -228,11 +228,11 @@ footer.foot p{margin:0 0 4px}
   </section>
 
   <section class="card" id="evolution">
-    <div class="sec-h"><h2><span class="n">2.</span>Sièges par parti : Likoud, Yashar! et partis arabes</h2><span class="badge">Évolution</span></div>
+    <div class="sec-h"><h2><span class="n">2.</span>Évolution des blocs</h2><span class="badge">Évolution</span></div>
     <div class="legend" id="legend"></div>
     <div id="chart" aria-label="Évolution des sièges estimés pendant le dépouillement"></div>
-    <p class="fig">Figure 2 — Sièges estimés au fil du dépouillement (heure d'Israël).</p>
-    <p class="fine">À la différence de l'hémicycle (totaux par bloc), ce graphique suit des partis : les deux premières listes non arabes et le total des partis arabes (Liste unifiée + Ra'am). Chaque point est un relevé daté et sourcé : relevés publiés par la presse à partir des comptes de la Commission électorale, ajoutés automatiquement toutes les 15 minutes ; aucun point intermédiaire n'est ajouté. Les sources expriment l'avancement tantôt en voix, tantôt en bureaux. Touchez une carte pour masquer ou afficher une courbe.</p>
+    <p class="fig">Figure 2 — Sièges estimés par bloc au fil du dépouillement (heure d’Israël).</p>
+    <p class="fine">Mêmes blocs que l'hémicycle : Bloc Netanyahou (Likoud, Shass, Otzma Yehudit, Sionisme religieux, Judaïsme unifié de la Torah, Noam), Bloc d'opposition (Yashar!, Ensemble, Démocrates, Israel Beytenou) et partis arabes (Liste unifiée + Ra'am). La ligne rouge marque la majorité de 61 sièges. Chaque point est un relevé daté et sourcé : relevés publiés par la presse à partir des comptes de la Commission électorale, ajoutés automatiquement toutes les 15 minutes ; aucun point intermédiaire n'est ajouté. Les sources expriment l'avancement tantôt en voix, tantôt en bureaux. Touchez une carte pour masquer ou afficher une courbe.</p>
   </section>
 
   <section class="card" id="coalition">
@@ -317,12 +317,14 @@ const BLOCS = {
 
 // Évolution : sièges estimés publiés à chaque étape (heure d'Israël, UTC+2)
 const TREND = [
-  { t:"2026-10-28T05:49:00+02:00", prog:"≈ 37,4 % des voix", src:"inn",  likud:28, yashar:21, arab:16 },
-  { t:"2026-10-28T07:45:00+02:00", prog:"≈ 55,4 % des voix", src:"inn",  likud:27, yashar:21, arab:15 },
-  { t:"2026-10-28T07:55:00+02:00", prog:"51,5 % des voix (57,2 % des bureaux)", src:"ynet", likud:27, yashar:21, arab:16 },
-  { t:"2026-10-28T09:17:00+02:00", prog:"65,8 % des bureaux", src:"pw", likud:28, yashar:21, arab:16 },
+  { t:"2026-10-28T05:49:00+02:00", prog:"≈ 37,4 % des voix", src:"inn",  likud:28, yashar:21, coal:57, opp:47, arab:16 },
+  { t:"2026-10-28T07:45:00+02:00", prog:"≈ 55,4 % des voix", src:"inn",  likud:27, yashar:21, coal:56, opp:49, arab:15 },
+  { t:"2026-10-28T07:55:00+02:00", prog:"51,5 % des voix (57,2 % des bureaux)", src:"ynet", likud:27, yashar:21, coal:55, opp:49, arab:16 },
+  { t:"2026-10-28T09:17:00+02:00", prog:"65,8 % des bureaux", src:"pw", likud:28, yashar:21, coal:56, opp:48, arab:16 },
 ];
-const TOP3 = ["likud","yashar","arab"]; // 2 premières listes non arabes + 1re liste arabe
+const TOP3 = ["coal","opp","arab"]; // mêmes blocs que l'hémicycle
+const BLOC_IDS = { coal:["likud","otzma","shas","utj","rzp","noam"], opp:["yashar","ensemble","dem","yb"], arab:["joint","raam"] };
+const withBlocs = seats => { const o={...seats}; for (const [b,ids] of Object.entries(BLOC_IDS)) if (o[b]==null && ids.some(id=>seats[id]!=null)) o[b]=ids.reduce((a,id)=>a+(seats[id]||0),0); return o; };
 
 // ───────── rendu ─────────
 const $ = id => document.getElementById(id);
@@ -335,7 +337,7 @@ SOURCES.cec = { label: "Commission électorale centrale — fichier officiel, co
 
 // État courant : relevé presse intégré, remplacé par la collecte officielle dès qu'elle existe
 let CUR = { time: LATEST.time, progressLabel: LATEST.progress, progressNote: "des bureaux (source presse)", valid: LATEST.valid, src: LATEST.source, parties: LATEST.parties };
-let POINTS = TREND.map(p => ({ t:p.t, prog:p.prog, src:p.src, seats:{ likud:p.likud, yashar:p.yashar, arab:p.arab } }));
+let POINTS = TREND.map(p => ({ t:p.t, prog:p.prog, src:p.src, seats:{ coal:p.coal, opp:p.opp, arab:p.arab } }));
 let STATUS = null, lastKey = null;
 
 async function getJSON(path){ const r = await fetch(`${path}?t=${Date.now()}`, { cache:"no-store" }); if(!r.ok) throw new Error(r.status); return r.json(); }
@@ -358,7 +360,7 @@ async function load(){
   let pressPoints, pressCur = null;
   if (pts) {
     pressPoints = pts.map(p => ({ t:p.t, prog:p.prog||"", src:srcKey(p.source),
-      seats:{ ...p.seats, arab: p.seats.arab ?? ((p.seats.joint||0)+(p.seats.raam||0)) } }));
+      seats: withBlocs(p.seats) }));
     const full = pts.filter(p => p.full && Object.values(p.seats).reduce((a,b)=>a+b,0) === 120);
     const last = full[full.length-1], before = full[full.length-2];
     if (last) {
@@ -369,7 +371,7 @@ async function load(){
           prev: before ? (before.seats[id] ?? 0) : (last.seats[id] ?? 0) })) };
     }
   } else {
-    pressPoints = TREND.map(p => ({ t:p.t, prog:p.prog, src:p.src, seats:{ likud:p.likud, yashar:p.yashar, arab:p.arab } }));
+    pressPoints = TREND.map(p => ({ t:p.t, prog:p.prog, src:p.src, seats:{ coal:p.coal, opp:p.opp, arab:p.arab } }));
   }
   if (pressCur) CUR = pressCur;
 
@@ -386,7 +388,7 @@ async function load(){
         .map(p => ({ ...p, prev: prev ? (prev[p.id] ?? 0) : (prevSeats[p.id] ?? p.seats) })),
     };
   }
-  const cec = hist.map(h => ({ t:h.t, prog: h.progress == null ? "avancement n.d." : `≈ ${pf(h.progress)} des votants (estimation)`, src:"cec", seats:{ ...h.seats, arab:(h.seats.joint||0)+(h.seats.raam||0) } }));
+  const cec = hist.map(h => ({ t:h.t, prog: h.progress == null ? "avancement n.d." : `≈ ${pf(h.progress)} des votants (estimation)`, src:"cec", seats: withBlocs(h.seats) }));
   POINTS = pressPoints.concat(cec).sort((x,y)=>Date.parse(x.t)-Date.parse(y.t));
   const key = CUR.time + "|" + POINTS.length;
   const isNew = lastKey !== null && key !== lastKey;
@@ -445,12 +447,15 @@ function hemicycle(){
 // Graphique des trois listes
 const hidden=new Set();
 const initials=s=>s.split(/\s+/).slice(-2).map(w=>w[0]).join("").toUpperCase();
-const P = id => id==="arab"
-  ? { id:"arab", name:"Partis arabes", leader:"Liste unifiée + Ra'am", bloc:"arab", color:"#2e9a4a", seats:CUR.parties.filter(p=>p.bloc==="arab").reduce((s,p)=>s+p.seats,0) }
-  : (CUR.parties.find(p=>p.id===id) || LATEST.parties.find(p=>p.id===id));
+const BLOC_META = {
+  coal: { id:"coal", name:"Bloc Netanyahou", leader:"Likoud, Shass, Otzma, Sionisme rel., UTJ", bloc:"coal", color:"#3987e5", photo:"likud", lead:"Benjamin Netanyahou" },
+  opp:  { id:"opp",  name:"Bloc d'opposition", leader:"Yashar!, Ensemble, Démocrates, Israel Beytenou", bloc:"opp", color:"#d95926", photo:"yashar", lead:"Gadi Eisenkot" },
+  arab: { id:"arab", name:"Partis arabes", leader:"Liste unifiée + Ra'am", bloc:"arab", color:"#2e9a4a" },
+};
+const P = id => ({ ...BLOC_META[id], seats: CUR.parties.filter(p=>p.bloc===id).reduce((s,p)=>s+p.seats,0) });
 function legend(){
   $("legend").innerHTML=TOP3.map(id=>{const p=P(id);return `<button type="button" class="leg ${hidden.has(id)?"off":""}" data-id="${id}" aria-pressed="${!hidden.has(id)}">
-    ${p.bloc==="arab"?`<span class="av av-none" style="border-color:${p.color};color:${p.color}">●</span>`:`<span class="av" style="background:${p.color};border-color:${p.color}"><img class="ph" src="img/${p.id}.jpg" alt="${p.leader}" onerror="this.remove()">${initials(p.leader)}</span>`}
+    ${p.bloc==="arab"?`<span class="av av-none" style="border-color:${p.color};color:${p.color}">●</span>`:`<span class="av" style="background:${p.color};border-color:${p.color}"><img class="ph" src="img/${p.photo||p.id}.jpg" alt="${p.lead||p.leader}" onerror="this.remove()">${initials(p.lead||p.leader)}</span>`}
     <span class="lt"><div class="ln">${p.name}</div><div class="ll">${p.leader}</div></span>
     <span class="lv" style="color:${p.color}">${p.seats}</span></button>`}).join("");
 }
@@ -469,11 +474,12 @@ function draw(){
         return `<b>${hm(pt.t)}</b> · ${pt.prog}<br><span style="color:#5f6b7a">${SOURCES[pt.src].label.split(" — ")[0]}</span>`+
           items.map(it=>`<br><span style="display:inline-block;width:10px;height:2px;background:${it.color};vertical-align:middle;margin-right:6px"></span>${it.seriesName} : <b>${it.value[1]} sièges</b>`).join("");}},
     xAxis:{type:"time",minInterval:1800000,axisLabel:{color:"#5f6b7a",hideOverlap:true,formatter:v=>hm(v)},axisLine:{lineStyle:{color:"#c5ccd6"}},splitLine:{show:false}},
-    yAxis:{type:"value",min:0,max:Math.ceil(ymax/5)*5,interval:5,axisLabel:{color:"#5f6b7a"},splitLine:{lineStyle:{color:"#e6e9ee"}}},
+    yAxis:{type:"value",min:0,max:Math.max(70,Math.ceil(ymax/10)*10),interval:10,axisLabel:{color:"#5f6b7a"},splitLine:{lineStyle:{color:"#e6e9ee"}}},
     series:TOP3.map(id=>({name:P(id).name,type:"line",symbolSize:POINTS.length>20?6:9,showSymbol:true,
       lineStyle:{width:2,color:P(id).color},itemStyle:{color:P(id).color,borderColor:"#ffffff",borderWidth:2},
       endLabel:{show:true,formatter:d=>d.value[1],color:"#1b2430",fontWeight:700},
-      data:POINTS.map(pt=>[pt.t,pt.seats[id]??null])}))
+      data:POINTS.map(pt=>[pt.t,pt.seats[id]??null]),
+      ...(id==="coal"?{markLine:{silent:true,symbol:"none",lineStyle:{color:"#b3261e",type:"dashed",width:1.5},label:{formatter:"Majorité 61",color:"#b3261e",fontSize:11,position:"insideStartTop"},data:[{yAxis:61}]}}:{})}))
   },{replaceMerge:["series"]});
 }
 window.addEventListener("resize",()=>chart&&chart.resize());
