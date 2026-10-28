@@ -187,7 +187,7 @@ async function main() {
   const changed = next.status !== status.status || next.message !== status.message || next.status === "new";
   const heartbeatDue = !status.lastWriteAt || Date.now() - Date.parse(status.lastWriteAt) > HEARTBEAT_MS;
   const out = { ...status, ...next, lastOkAt: next.lastOkAt ?? status.lastOkAt ?? null, lastCheckAt: now };
-  if (changed || heartbeatDue) {
+  if (true) { // statut réécrit à chaque passage : il alimente « Actualisé il y a … »
     out.lastWriteAt = now;
     await writeJson("data/status.json", out);
   }

@@ -78,6 +78,10 @@ h1{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-size:clamp(26
 .kpi-n{font-size:11.5px;color:var(--muted);display:block}
 .stamp-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:12px}
 .stamp{font-size:13px;color:var(--text-2)}
+.live{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--ok);background:#eaf6ee;border:1px solid #b9e0c5;border-radius:999px;padding:7px 12px}
+.live.stale{color:var(--accent);background:#fff4e5;border-color:#f3c98b}
+.ldot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(26,127,55,.45)}70%{box-shadow:0 0 0 7px rgba(26,127,55,0)}100%{box-shadow:0 0 0 0 rgba(26,127,55,0)}}
 .btn-r{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;border:0;border-radius:6px;padding:11px 16px;font:600 14px "Public Sans",sans-serif;cursor:pointer;min-height:44px}
 .btn-r:hover{background:var(--navy-2)}
 .btn-r svg{width:18px;height:18px}.btn-r.loading svg{animation:spin .9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
@@ -201,8 +205,8 @@ footer.foot p{margin:0 0 4px}
       <div class="kpi"><span class="kpi-l">Sièges estimés</span><span class="kpi-v">120</span><span class="kpi-n">selon les voix déjà comptées</span></div>
     </div>
     <div class="stamp-row">
-      <div class="stamp">Dernier relevé : <strong id="kTime"></strong><br><span class="muted" id="kCheck"></span></div>
-      <button class="btn-r" id="bRefresh" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Actualiser les résultats</button>
+      <div class="stamp">Dernier relevé : <strong id="kTime"></strong><br><span class="muted" id="kCheck">Mise à jour automatique toutes les 15 minutes.</span></div>
+      <div class="live" id="live"><span class="ldot"></span><span id="liveTxt">Actualisation…</span></div>
     </div>
     <div class="notice" id="notice" role="status" aria-live="polite" hidden></div>
     <div class="banner" id="banner" hidden></div>
@@ -398,14 +402,17 @@ function render(){
   $("kValid").textContent = CUR.valid == null ? "n.d." : nf.format(CUR.valid);
   $("kTime").textContent = `${dhm(CUR.time)} (heure d'Israël) — ${SOURCES[CUR.src].label.split(" — ")[0]}`;
   const b = $("banner"); const msgs = [];
-  if (STATUS) {
-    $("kCheck").textContent = `Collecte automatique : dernière vérification de la source ${ago(STATUS.lastCheckAt)}.`;
+  const lastUpd = STATUS?.lastCheckAt || null;
+  const live=$("live");
+  if (lastUpd) {
+    $("liveTxt").textContent = `Actualisé ${ago(lastUpd)}`;
+    live.classList.toggle("stale", Date.now()-Date.parse(lastUpd) > 40*60000);
     if (["blocked","http","network","format","incoherent","empty"].includes(STATUS.status))
-      msgs.push(`Lecture directe de la Commission électorale bloquée (protection anti-robot). Les chiffres affichés viennent des relevés de la Commission relayés par la presse, ajoutés automatiquement toutes les 15 minutes.`);
+      msgs.push("Lecture directe de la Commission électorale bloquée (protection anti-robot). Les chiffres viennent des relevés de la Commission relayés par la presse, ajoutés automatiquement toutes les 15 minutes.");
     if (STATUS.status === "waiting") msgs.push(STATUS.message);
-    if (STATUS.lastCheckAt && Date.now() - Date.parse(STATUS.lastCheckAt) > 40*60000) msgs.push("La collecte automatique ne s'est pas exécutée depuis plus de 40 minutes : données potentiellement obsolètes.");
+    if (Date.now()-Date.parse(lastUpd) > 40*60000) msgs.push("Aucune actualisation depuis plus de 40 minutes : données potentiellement obsolètes.");
   } else {
-    $("kCheck").textContent = "Collecte automatique en cours de démarrage.";
+    $("liveTxt").textContent = "Actualisation automatique";
   }
   b.textContent = msgs.join(" "); b.hidden = !msgs.length;
   hemicycle(); legend(); draw(); table(); sources(); coalition(); if(!$("comTxt").textContent) comTick();
@@ -534,17 +541,9 @@ $("cReset").addEventListener("click",()=>{picked.clear(); coalition();});
 // Actualisation
 let noticeTimer;
 function notice(m, kind=""){ const n=$("notice"); n.textContent=m; n.className=`notice ${kind}`; n.hidden=false; clearTimeout(noticeTimer); noticeTimer=setTimeout(()=>n.hidden=true,10000); }
-$("bRefresh").addEventListener("click", async () => {
-  const btn=$("bRefresh"); btn.disabled=true; btn.classList.add("loading"); btn.lastChild.textContent=" Vérification…";
-  try {
-    const isNew = await load();
-    if (isNew) notice("Nouveau relevé intégré : chiffres, graphique et horodatage mis à jour.", "ok");
-    else notice(`Aucune nouvelle donnée depuis le relevé de ${hm(CUR.time)} (heure d'Israël).${STATUS?.lastCheckAt ? " Source officielle vérifiée " + ago(STATUS.lastCheckAt) + "." : ""}`);
-  } catch { notice("Échec de la vérification. Les derniers chiffres vérifiés restent affichés.", "err"); }
-  finally { btn.disabled=false; btn.classList.remove("loading"); btn.lastChild.textContent=" Actualiser les résultats"; }
-});
+
 setInterval(async()=>{ if(document.hidden) return; try { if (await load()) toast("Nouveau relevé intégré"); } catch {} }, 60000);
-setInterval(()=>STATUS&&render(), 60000*5);
+setInterval(()=>STATUS&&render(), 30000);
 
 // Sources
 function sources(){ $("src").innerHTML=Object.values(SOURCES).map(s=>`<li><a href="${s.url}" target="_blank" rel="noopener">${s.label}</a></li>`).join("")+
