@@ -66,6 +66,9 @@ h1{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-size:clamp(26
 .ast{color:var(--stamp);text-decoration:none;font-weight:700}
 .ref{font-size:12.5px;color:var(--muted);margin:0 0 14px}
 .ref span{display:inline-block;margin-right:12px}
+.state{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--stamp);margin:0 0 6px}
+.state .sdot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+.state.final{color:var(--ok)}.state.final .sdot{animation:none}
 .satire{display:flex;gap:10px;align-items:flex-start;background:#fff8e6;border:1px solid #f0d58a;border-left:5px solid var(--gold);border-radius:6px;padding:10px 12px;font-size:13.5px;margin:0 0 14px}
 .satire b{color:#7a5300}
 
@@ -192,7 +195,8 @@ footer.foot p{margin:0 0 4px}
 </div></nav>
 
 <main class="wrap">
-  <div class="crumbs"><a href="#">Accueil</a> › <a href="#">Élections</a> › <a href="#">26<sup>e</sup> Knesset</a> › Résultats provisoires</div>
+  <div class="crumbs"><a href="#">Accueil</a> › <a href="#">Élections</a> › <a href="#">26<sup>e</sup> Knesset</a> › <span id="crumbState">Résultats provisoires</span></div>
+  <div class="state" id="state"><span class="sdot"></span><span id="stateTxt">Dépouillement en cours</span></div>
   <h1>Élections israéliennes 2026</h1>
   <p class="tag">La seule démocratie du Moyen-Orient<a href="#asterisque" class="ast">*</a></p>
   <p class="ref"><span>Communiqué n° ODGV/26K/2026</span><span>Scrutin du mardi 27 octobre 2026</span><span>120 sièges · majorité absolue : 61</span></p>
@@ -214,7 +218,7 @@ footer.foot p{margin:0 0 4px}
   </section>
 
   <section class="card" id="sieges">
-    <div class="sec-h"><h2><span class="n">1.</span>Répartition des sièges</h2><span class="badge">Résultats partiels</span></div>
+    <div class="sec-h"><h2><span class="n">1.</span>Répartition des sièges</h2><span class="badge" id="seatBadge">Résultats partiels</span></div>
     <svg id="hemi" viewBox="0 0 400 205" role="img" aria-label="Hémicycle de la Knesset"></svg>
     <div class="hc"><b id="hBig"></b><div>Totaux par <b>bloc</b> : Bloc Netanyahou · Opposition — majorité 61</div></div>
     <div class="tip" id="tip">Touchez un siège pour voir le parti</div>
@@ -352,6 +356,12 @@ async function load(){
   try { latest = await getJSON("data/latest.json"); hist = await getJSON("data/history.json"); } catch {}
   try { press = await getJSON("data/press.json"); } catch {}
   STATUS = st;
+  try { const fin = await getJSON("data/final.json");
+    if (fin && fin.final) {
+      $("state").classList.add("final");
+      $("stateTxt").textContent = fin.proclaimedAt ? `Résultats définitifs · proclamés le ${new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"long",timeZone:"Asia/Jerusalem"}).format(new Date(fin.proclaimedAt))}` : "Résultats définitifs";
+      $("crumbState").textContent = "Résultats définitifs"; $("seatBadge").textContent = "Résultats définitifs";
+    } } catch {}
 
   // Relevés de presse (fichier de données ; repli sur les relevés intégrés à la page)
   const pts = (press && Array.isArray(press.points) && press.points.length)
