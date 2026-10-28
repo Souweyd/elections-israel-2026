@@ -57,7 +57,7 @@ a{color:var(--text-2)}
 .blocs li{display:flex;align-items:center;gap:8px;font-size:13.5px}.blocs .sw{width:10px;height:10px;border-radius:3px;flex:none}.blocs .v{margin-left:auto;font-weight:600}
 .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
 .leg{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:8px 10px;cursor:pointer;text-align:left;color:inherit;font:inherit;min-width:0}
-.leg.off{opacity:.4}.av-none{background:transparent;font-size:18px}
+.leg.off{opacity:.4}.av{position:relative;overflow:hidden}.av .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%}.av-none{background:transparent;font-size:18px}
 .av{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;border:2px solid}
 .lt{min-width:0;flex:1}.ln{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ll{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -220,7 +220,7 @@ const hidden=new Set();
 const initials=s=>s.split(/\s+/).slice(-2).map(w=>w[0]).join("").toUpperCase();
 function legend(){
   $("legend").innerHTML=TOP3.map(id=>{const p=P[id];return `<button type="button" class="leg ${hidden.has(id)?"off":""}" data-id="${id}" aria-pressed="${!hidden.has(id)}">
-    ${p.bloc==="arab"?`<span class="av av-none" style="border-color:${p.color};color:${p.color}">●</span>`:`<span class="av" style="background:${p.color};border-color:${p.color}">${initials(p.leader)}</span>`}
+    ${p.bloc==="arab"?`<span class="av av-none" style="border-color:${p.color};color:${p.color}">●</span>`:`<span class="av" style="background:${p.color};border-color:${p.color}"><img class="ph" src="img/${p.id}.jpg" alt="${p.leader}" onerror="this.remove()">${initials(p.leader)}</span>`}
     <span class="lt"><div class="ln">${p.name}</div><div class="ll">${p.leader}</div></span>
     <span class="lv" style="color:${p.color}">${p.seats}</span></button>`}).join("");
 }
