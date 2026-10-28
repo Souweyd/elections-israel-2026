@@ -149,6 +149,7 @@ tbody tr:nth-child(even){background:#fafbfd}
 th.on{color:var(--navy);text-decoration:underline}
 .pc{display:flex;align-items:center;gap:10px}.pc .sw{width:4px;align-self:stretch;border-radius:2px;flex:none}
 .pn{font-weight:600}
+.est{color:var(--accent);font-weight:600}
 
 /* Partage, sources, pied de page */
 .share{display:flex;gap:8px;flex-wrap:wrap}
@@ -255,7 +256,7 @@ footer.foot p{margin:0 0 4px}
       <tbody id="tb"></tbody>
     </table></div>
     <p class="fig">Tableau 1 — Résultats provisoires par liste.</p>
-    <p class="fine">Sièges estimés sur les voix déjà comptées (seuil 3,25 %, méthode Bader-Ofer) : ils évolueront jusqu'à la proclamation officielle, attendue le 4 novembre 2026. « Évol. » : variation de sièges par rapport au relevé précédent. « n.d. » : donnée non publiée dans la source.</p>
+    <p class="fine">Sièges estimés sur les voix déjà comptées (seuil 3,25 %, méthode Bader-Ofer) : ils évolueront jusqu'à la proclamation officielle, attendue le 4 novembre 2026. « Évol. » : variation de sièges par rapport au relevé précédent. « ≈ » : pourcentage de voix <b>estimé</b> d'après les sièges, quand la source ne le publie pas (marge d'environ ±0,5 point). « n.d. » : donnée non publiée.</p>
   </section>
 
   <section class="card" id="partager">
@@ -373,11 +374,17 @@ async function load(){
       seats: withBlocs(p.seats) }));
     const full = pts.filter(p => p.full && Object.values(p.seats).reduce((a,b)=>a+b,0) === 120);
     const last = full[full.length-1], before = full[full.length-2];
+    // Estimation du % de voix quand la source ne le publie pas : part des voix des listes élues
+    // (relevé le plus récent qui publie les %), répartie au prorata des sièges.
+    const withPct = [...pts].reverse().find(p => p.pct && Object.keys(p.pct).length);
+    const qref = withPct ? Object.entries(withPct.pct).filter(([id]) => (withPct.seats[id]||0) > 0).reduce((a,[,v]) => a+v, 0) : null;
     if (last) {
       const ids = new Set([...Object.keys(last.seats), ...Object.keys(last.pct||{})]);
       pressCur = { time:last.t, progressLabel:last.prog||"n.d.", progressNote:"source presse", valid:last.valid ?? null, src:srcKey(last.source),
         parties:[...ids].filter(id=>META[id]).map(id => ({ ...META[id], seats:last.seats[id] ?? 0,
-          pct: last.pct?.[id] ?? null, votes: last.votes?.[id] ?? null,
+          pct: last.pct?.[id] ?? (qref && (last.seats[id]||0) > 0 ? (last.seats[id]/120)*qref : null),
+          est: last.pct?.[id] == null && !!qref && (last.seats[id]||0) > 0,
+          votes: last.votes?.[id] ?? null,
           prev: before ? (before.seats[id] ?? 0) : (last.seats[id] ?? 0) })) };
     }
   } else {
@@ -500,7 +507,7 @@ function table(){
   const rows=[...CUR.parties].sort((a,b)=>sortKey==="pct"?(b.pct??-1)-(a.pct??-1):(b.seats-a.seats)||((b.pct??0)-(a.pct??0)));
   $("tb").innerHTML=rows.map(p=>{const d=p.seats-p.prev;
     return `<tr><td><div class="pc"><span class="sw" style="background:${p.color}"></span><div><div class="pn">${p.name}</div><div class="pl">${p.leader}</div></div></div></td>
-    <td class="num">${pf(p.pct)}<div class="pl">${p.votes==null?"":nf.format(p.votes)}</div></td>
+    <td class="num">${p.est?`<span class="est" title="Estimé d'après les sièges">≈ ${pf(p.pct)}</span>`:pf(p.pct)}<div class="pl">${p.est?"estimé":p.votes==null?"":nf.format(p.votes)}</div></td>
     <td class="num"><b>${p.seats}</b></td>
     <td class="num" style="color:${d>0?"var(--ok)":d<0?"var(--err)":"var(--muted)"}">${d>0?"+"+d:d<0?"−"+(-d):"="}</td></tr>`}).join("");
   document.querySelectorAll("th[data-s]").forEach(th=>th.classList.toggle("on",th.dataset.s===sortKey));
