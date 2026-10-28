@@ -140,10 +140,10 @@ th.on{color:var(--text)}
   </section>
 
   <section class="card">
-    <div class="head"><h2>Likoud, Yashar! et Liste unifiée</h2></div>
+    <div class="head"><h2>Likoud, Yashar! et partis arabes</h2></div>
     <div class="legend" id="legend"></div>
     <div id="chart" aria-label="Évolution des sièges estimés pendant le dépouillement"></div>
-    <p class="fine">Les deux premières listes non arabes et la première liste arabe. Sièges estimés à chaque point publié du dépouillement (heure d'Israël). Chaque point est un relevé daté et sourcé : relevés de presse jusqu'à 09:17, puis relevés officiels collectés automatiquement toutes les 5 minutes ; aucun point intermédiaire n'est ajouté. Les médias expriment l'avancement tantôt en voix, tantôt en bureaux, d'où des pourcentages non strictement croissants. Touchez une carte pour masquer ou afficher une courbe.</p>
+    <p class="fine">Les deux premières listes non arabes et le total des partis arabes (Liste unifiée + Ra'am). Sièges estimés à chaque point publié du dépouillement (heure d'Israël). Chaque point est un relevé daté et sourcé : relevés de presse jusqu'à 09:17, puis relevés officiels collectés automatiquement toutes les 5 minutes ; aucun point intermédiaire n'est ajouté. Les médias expriment l'avancement tantôt en voix, tantôt en bureaux, d'où des pourcentages non strictement croissants. Touchez une carte pour masquer ou afficher une courbe.</p>
   </section>
 
   <section class="card">
@@ -218,12 +218,12 @@ const BLOCS = {
 
 // Évolution : sièges estimés publiés à chaque étape (heure d'Israël, UTC+2)
 const TREND = [
-  { t:"2026-10-28T05:49:00+02:00", prog:"≈ 37,4 % des voix", src:"inn",  likud:28, yashar:21, joint:12 },
-  { t:"2026-10-28T07:45:00+02:00", prog:"≈ 55,4 % des voix", src:"inn",  likud:27, yashar:21, joint:11 },
-  { t:"2026-10-28T07:55:00+02:00", prog:"51,5 % des voix (57,2 % des bureaux)", src:"ynet", likud:27, yashar:21, joint:12 },
-  { t:"2026-10-28T09:17:00+02:00", prog:"65,8 % des bureaux", src:"pw", likud:28, yashar:21, joint:12 },
+  { t:"2026-10-28T05:49:00+02:00", prog:"≈ 37,4 % des voix", src:"inn",  likud:28, yashar:21, arab:16 },
+  { t:"2026-10-28T07:45:00+02:00", prog:"≈ 55,4 % des voix", src:"inn",  likud:27, yashar:21, arab:15 },
+  { t:"2026-10-28T07:55:00+02:00", prog:"51,5 % des voix (57,2 % des bureaux)", src:"ynet", likud:27, yashar:21, arab:16 },
+  { t:"2026-10-28T09:17:00+02:00", prog:"65,8 % des bureaux", src:"pw", likud:28, yashar:21, arab:16 },
 ];
-const TOP3 = ["likud","yashar","joint"]; // 2 premières listes non arabes + 1re liste arabe
+const TOP3 = ["likud","yashar","arab"]; // 2 premières listes non arabes + 1re liste arabe
 
 // ───────── rendu ─────────
 const $ = id => document.getElementById(id);
@@ -236,7 +236,7 @@ SOURCES.cec = { label: "Commission électorale centrale — fichier officiel, co
 
 // État courant : relevé presse intégré, remplacé par la collecte officielle dès qu'elle existe
 let CUR = { time: LATEST.time, progressLabel: LATEST.progress, progressNote: "des bureaux (source presse)", valid: LATEST.valid, src: LATEST.source, parties: LATEST.parties };
-let POINTS = TREND.map(p => ({ t:p.t, prog:p.prog, src:p.src, seats:{ likud:p.likud, yashar:p.yashar, joint:p.joint } }));
+let POINTS = TREND.map(p => ({ t:p.t, prog:p.prog, src:p.src, seats:{ likud:p.likud, yashar:p.yashar, arab:p.arab } }));
 let STATUS = null, lastKey = null;
 
 async function getJSON(path){ const r = await fetch(`${path}?t=${Date.now()}`, { cache:"no-store" }); if(!r.ok) throw new Error(r.status); return r.json(); }
@@ -258,9 +258,9 @@ async function load(){
         .map(p => ({ ...p, prev: prev ? (prev[p.id] ?? 0) : (prevPress[p.id] ?? p.seats) })),
     };
   }
-  const press = TREND.map(p => ({ t:p.t, prog:p.prog, src:p.src, seats:{ likud:p.likud, yashar:p.yashar, joint:p.joint } }));
+  const press = TREND.map(p => ({ t:p.t, prog:p.prog, src:p.src, seats:{ likud:p.likud, yashar:p.yashar, arab:p.arab } }));
   const cec = hist.filter(h => Date.parse(h.t) > Date.parse(LATEST.time))
-    .map(h => ({ t:h.t, prog: h.progress == null ? "avancement n.d." : `≈ ${pf(h.progress)} des votants (estimation)`, src:"cec", seats:h.seats }));
+    .map(h => ({ t:h.t, prog: h.progress == null ? "avancement n.d." : `≈ ${pf(h.progress)} des votants (estimation)`, src:"cec", seats:{ ...h.seats, arab:(h.seats.joint||0)+(h.seats.raam||0) } }));
   POINTS = press.concat(cec);
   const key = CUR.time + "|" + POINTS.length;
   const isNew = lastKey !== null && key !== lastKey;
@@ -317,7 +317,9 @@ function hemicycle(){
 // Graphique des trois listes
 const hidden=new Set();
 const initials=s=>s.split(/\s+/).slice(-2).map(w=>w[0]).join("").toUpperCase();
-const P = id => CUR.parties.find(p=>p.id===id) || LATEST.parties.find(p=>p.id===id);
+const P = id => id==="arab"
+  ? { id:"arab", name:"Partis arabes", leader:"Liste unifiée + Ra'am", bloc:"arab", color:"#2e9a4a", seats:CUR.parties.filter(p=>p.bloc==="arab").reduce((s,p)=>s+p.seats,0) }
+  : (CUR.parties.find(p=>p.id===id) || LATEST.parties.find(p=>p.id===id));
 function legend(){
   $("legend").innerHTML=TOP3.map(id=>{const p=P(id);return `<button type="button" class="leg ${hidden.has(id)?"off":""}" data-id="${id}" aria-pressed="${!hidden.has(id)}">
     ${p.bloc==="arab"?`<span class="av av-none" style="border-color:${p.color};color:${p.color}">●</span>`:`<span class="av" style="background:${p.color};border-color:${p.color}"><img class="ph" src="img/${p.id}.jpg" alt="${p.leader}" onerror="this.remove()">${initials(p.leader)}</span>`}
