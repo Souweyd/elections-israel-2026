@@ -84,18 +84,41 @@ th.on{color:var(--text)}
 .notice.ok{border-color:rgba(63,185,80,.5)}.notice.err{border-color:rgba(248,81,73,.55)}
 .banner{margin-top:10px;font-size:13px;padding:10px 12px;border-radius:10px;background:rgba(210,153,34,.12);border:1px solid rgba(210,153,34,.5);color:#f2cc60}
 @media (max-width:560px){.btn-r{width:100%;justify-content:center}}
+.satire{display:inline-block;font-size:11.5px;font-weight:600;color:#1a1500;background:var(--accent);border-radius:6px;padding:3px 8px;margin:10px 0 2px}
+.tag{font-family:Fraunces,Georgia,serif;font-size:clamp(17px,4.6vw,22px);color:var(--text-2);margin:0 0 8px;font-style:italic}
+.ast{color:var(--accent);text-decoration:none;font-weight:700}
+.ast-note{color:var(--text-2);font-size:13px;margin:0 0 6px}
+.com{margin-top:12px;padding:12px 14px;border-radius:12px;background:#1d1a10;border:1px solid rgba(232,197,71,.35);font-size:14.5px;line-height:1.45;min-height:64px}
+.com-l{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+#comTxt{transition:opacity .35s}#comTxt.fade{opacity:0}
+.zero{display:flex;gap:14px;align-items:center;margin:14px 0 4px;padding:12px;border-radius:12px;background:var(--surface-2);border:1px dashed #6e7681}
+.zero-n{font-size:34px;font-weight:700;line-height:1;white-space:nowrap}.zero-n span{font-size:15px;color:var(--muted);font-weight:500}
+.arab{font-size:13px;color:#7ee2a0;margin:10px 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface-2);color:var(--text);border-radius:999px;padding:7px 12px;font:500 13px Inter,sans-serif;cursor:pointer;display:inline-flex;gap:6px;align-items:center;min-height:36px}
+.chip i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.chip.on{border-color:var(--text);background:#2a323d}
+.cbar{position:relative;height:14px;border-radius:7px;background:var(--surface-2);margin-top:14px;overflow:hidden}
+.cbar #cFill{height:100%;width:0;background:var(--accent);transition:width .4s,background .4s}
+.cbar .maj{position:absolute;top:0;bottom:0;width:2px;background:var(--text);left:calc(61/120*100%)}
+.ctot{margin-top:6px;font-size:14px}.ctot b{font-size:20px}
+.cmsg{margin-top:8px;font-size:14.5px;color:var(--text-2);min-height:42px}
+.link{background:none;border:0;color:var(--accent);font:600 13px Inter,sans-serif;cursor:pointer}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap">
   <div class="kicker"><span class="dot"></span>Dépouillement en cours</div>
+  <div class="satire">Site satirique et engagé — les chiffres sont vrais, le ton est assumé.</div>
   <h1>Élections israéliennes 2026</h1>
+  <p class="tag">La seule démocratie du Moyen-Orient<a href="#asterisque" class="ast">*</a></p>
   <p class="sub">26<sup>e</sup> Knesset · scrutin du mardi 27 octobre 2026 · 120 sièges, majorité à 61</p>
   <div class="kpis">
     <div class="kpi"><span class="kpi-l">Avancement</span><span class="kpi-v" id="kProg"></span><span class="kpi-n" id="kProgN"></span></div>
     <div class="kpi"><span class="kpi-l">Suffrages valides comptés</span><span class="kpi-v" id="kValid"></span><span class="kpi-n">participation finale 77,7 %</span></div>
     <div class="kpi"><span class="kpi-l">Sièges estimés</span><span class="kpi-v">120</span><span class="kpi-n">sur 120, selon les voix comptées</span></div>
   </div>
+  <div class="com" id="com" aria-live="polite"><span class="com-l">Le commentateur</span><span id="comTxt"></span></div>
   <div class="stamp">Dernier relevé : <strong id="kTime"></strong><br><span class="muted" id="kCheck"></span></div>
   <button class="btn-r" id="bRefresh" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Actualiser les résultats</button>
   <div class="notice" id="notice" role="status" aria-live="polite" hidden></div>
@@ -108,10 +131,12 @@ th.on{color:var(--text)}
     <svg id="hemi" viewBox="0 0 400 205" role="img" aria-label="Hémicycle de la Knesset"></svg>
     <div class="hc"><b id="hBig"></b><div>Bloc Netanyahou · Opposition — majorité 61</div></div>
     <div class="tip" id="tip">Touchez un siège pour voir le parti</div>
+    <div class="zero"><div class="zero-n">0<span> / 120</span></div><div><b>Sièges représentant les Palestiniens de Cisjordanie et de Gaza</b><div class="pl">Près de 5 millions de Palestiniens des territoires occupés ne votent pas aux législatives israéliennes. Les colons israéliens de Cisjordanie, eux, votent.</div></div></div>
     <h3>Par bloc politique</h3>
     <div class="bar" id="bar"></div>
     <ul class="blocs" id="blocs"></ul>
-    <p class="fine">Les blocs sont un regroupement politique repris de la presse (France 24, Arutz Sheva), pas un résultat officiel. Aucun bloc n'atteint les 61 sièges à ce stade.</p>
+    <p class="arab">Participation des électeurs arabes qualifiée d'« inédite » par <a href="https://www.haaretz.com/israel-news/elections/2026-10-27/ty-article-live/israelis-ready-to-cast-their-vote-in-an-election-that-could-end-netanyahus-rule/000001a1-7afd-d5cb-a9ab-7ffd495d0000" target="_blank" rel="noopener">Haaretz</a>.</p>
+    <p class="fine">Les blocs sont un regroupement politique repris de la presse (France 24, Arutz Sheva), pas un résultat officiel.</p>
   </section>
 
   <section class="card">
@@ -119,6 +144,15 @@ th.on{color:var(--text)}
     <div class="legend" id="legend"></div>
     <div id="chart" aria-label="Évolution des sièges estimés pendant le dépouillement"></div>
     <p class="fine">Les deux premières listes non arabes et la première liste arabe. Sièges estimés à chaque point publié du dépouillement (heure d'Israël). Chaque point est un relevé daté et sourcé : relevés de presse jusqu'à 09:17, puis relevés officiels collectés automatiquement toutes les 5 minutes ; aucun point intermédiaire n'est ajouté. Les médias expriment l'avancement tantôt en voix, tantôt en bureaux, d'où des pourcentages non strictement croissants. Touchez une carte pour masquer ou afficher une courbe.</p>
+  </section>
+
+  <section class="card">
+    <div class="head"><h2>Fabrique ta coalition</h2><button type="button" class="link" id="cReset">Tout effacer</button></div>
+    <p class="pl" style="margin:0 0 10px">Touchez les partis pour assembler 61 sièges (sièges du dernier relevé).</p>
+    <div class="chips" id="chips"></div>
+    <div class="cbar"><div id="cFill"></div><span class="maj"></span></div>
+    <div class="ctot"><b id="cSum">0</b> / 61 sièges</div>
+    <div class="cmsg" id="cMsg">Le casting est ouvert. Bonne chance.</div>
   </section>
 
   <section class="card">
@@ -144,7 +178,7 @@ th.on{color:var(--text)}
     <h2>Sources</h2>
     <ul class="src" id="src"></ul>
   </section>
-  <footer class="foot">Page indépendante, sans publicité ni collecte de données. Chiffres partiels susceptibles d'évoluer.</footer>
+  <footer class="foot"><p id="asterisque" class="ast-note">* Offre soumise à conditions. Non valable en Cisjordanie ni à Gaza.</p>Page indépendante et satirique, sans publicité ni collecte de données. Chiffres réels, partiels et susceptibles d'évoluer.</footer>
 </main>
 <div class="toast" id="toast" hidden></div>
 
@@ -251,7 +285,7 @@ function render(){
     $("kCheck").textContent = "Collecte automatique en cours de démarrage.";
   }
   b.textContent = msgs.join(" "); b.hidden = !msgs.length;
-  hemicycle(); legend(); draw(); table(); sources();
+  hemicycle(); legend(); draw(); table(); sources(); coalition(); if(!$("comTxt").textContent) comTick();
 }
 
 // Hémicycle
@@ -326,6 +360,51 @@ function table(){
   document.querySelectorAll("th[data-s]").forEach(th=>th.classList.toggle("on",th.dataset.s===sortKey));
 }
 document.querySelectorAll("th[data-s]").forEach(th=>th.addEventListener("click",()=>{sortKey=th.dataset.s;table();}));
+
+
+// ───────── Le commentateur (phrases calculées à partir des vrais chiffres) ─────────
+function blocTotals(){ const t={coal:0,opp:0,arab:0,other:0}; CUR.parties.forEach(p=>t[p.bloc]=(t[p.bloc]||0)+p.seats); return t; }
+function comLines(){
+  const t=blocTotals(), seat=id=>(CUR.parties.find(p=>p.id===id)||{}).seats||0, L=[];
+  if (t.coal<61) L.push(`Bloc Netanyahou à ${t.coal} : il ne manque que ${61-t.coal} sièges et quelques conventions de Genève.`);
+  else L.push(`Bloc Netanyahou à ${t.coal} : majorité atteinte. Les bulldozers sont prévenus.`);
+  L.push(`Opposition à ${t.opp} sièges, menée par un ancien chef d'état-major : le changement dans la continuité.`);
+  if (t.arab) L.push(`Partis arabes à ${t.arab} sièges : assez pour faire une majorité, presque jamais assez pour être invités dedans.`);
+  if (t.coal<61 && t.opp<61) L.push("Aucun bloc à 61. Six scrutins depuis 2019 : on réserve déjà la salle pour le septième.");
+  if (seat("otzma")) L.push(`Otzma Yehudit à ${seat("otzma")} sièges. Son chef a été condamné en 2007 pour incitation au racisme ; aujourd'hui, il fait les coalitions.`);
+  L.push("Électeurs inscrits à Gaza et en Cisjordanie (hors colons) : zéro. Taux de participation : imbattable.");
+  return L;
+}
+let comI=0;
+function comTick(){ const L=comLines(), el=$("comTxt"); el.classList.add("fade"); setTimeout(()=>{ el.textContent=L[comI%L.length]; comI++; el.classList.remove("fade"); },350); }
+setInterval(()=>{ if(!document.hidden) comTick(); }, 9000);
+
+// ───────── Fabrique ta coalition ─────────
+const picked=new Set();
+function coalMsg(){
+  const has=id=>picked.has(id), n=[...picked].reduce((s,id)=>s+((CUR.parties.find(p=>p.id===id)||{}).seats||0),0);
+  const arab=has("joint")||has("raam"), left=has("dem"), right=has("otzma")||has("rzp");
+  if (!picked.size) return "Le casting est ouvert. Bonne chance.";
+  if (right && arab) return "Ben Gvir ou Smotrich au gouvernement avec un parti arabe : la paix au Proche-Orient commence ici, apparemment.";
+  if (has("likud") && has("joint")) return "Likoud + Liste unifiée : le scénario le moins crédible depuis la solution à deux États.";
+  if (has("likud") && has("yashar")) return "Grande coalition Netanyahou–Eisenkot : désaccord total sur qui sera Premier ministre, accord parfait sur la Cisjordanie.";
+  if ((has("utj")||has("shas")) && (has("yb")||has("ensemble"))) return "Ultra-orthodoxes et laïcs dans le même gouvernement : le service militaire va être un sujet passionnant.";
+  if (right && left) return "Les Démocrates avec l'extrême droite : la gauche israélienne a enfin trouvé sa cohérence.";
+  if (n>=61 && arab) return `${n} sièges ! Une majorité qui a besoin des partis arabes. On attend la photo de famille avec impatience.`;
+  if (n>=61) return `${n} sièges, majorité trouvée. Les Palestiniens, eux, n'ont toujours pas voix au chapitre.`;
+  if (!arab && (has("yashar")||has("ensemble")) && !has("likud")) return `Encore ${61-n} sièges. Pour battre Netanyahou il faut les partis arabes ; pour gouverner avec eux, il faut du courage. On cherche encore le courage.`;
+  return `Encore ${61-n} sièges. Essayez d'ajouter un peu de cohérence.`;
+}
+function coalition(){
+  const ps=CUR.parties.filter(p=>p.seats>0).sort((a,b)=>b.seats-a.seats);
+  [...picked].forEach(id=>{ if(!ps.find(p=>p.id===id)) picked.delete(id); });
+  $("chips").innerHTML=ps.map(p=>`<button type="button" class="chip ${picked.has(p.id)?"on":""}" data-id="${p.id}" aria-pressed="${picked.has(p.id)}"><i style="background:${p.color}"></i>${p.name} · ${p.seats}</button>`).join("");
+  const n=[...picked].reduce((s,id)=>s+(ps.find(p=>p.id===id)||{seats:0}).seats,0);
+  $("cSum").textContent=n; $("cFill").style.width=Math.min(100,n/120*100)+"%"; $("cFill").style.background=n>=61?"var(--ok)":"var(--accent)";
+  $("cMsg").textContent=coalMsg();
+}
+$("chips").addEventListener("click",e=>{const b=e.target.closest(".chip"); if(!b) return; const id=b.dataset.id; picked.has(id)?picked.delete(id):picked.add(id); coalition();});
+$("cReset").addEventListener("click",()=>{picked.clear(); coalition();});
 
 // Actualisation
 let noticeTimer;
