@@ -407,8 +407,6 @@ function render(){
   if (lastUpd) {
     $("liveTxt").textContent = `Actualisé ${ago(lastUpd)}`;
     live.classList.toggle("stale", Date.now()-Date.parse(lastUpd) > 40*60000);
-    if (["blocked","http","network","format","incoherent","empty"].includes(STATUS.status))
-      msgs.push("Lecture directe de la Commission électorale bloquée (protection anti-robot). Les chiffres viennent des relevés de la Commission relayés par la presse, ajoutés automatiquement toutes les 15 minutes.");
     if (STATUS.status === "waiting") msgs.push(STATUS.message);
     if (Date.now()-Date.parse(lastUpd) > 40*60000) msgs.push("Aucune actualisation depuis plus de 40 minutes : données potentiellement obsolètes.");
   } else {
