@@ -1,39 +1,51 @@
 name: Collecte des résultats (CEC)
 
+# Les déclenchements programmés de GitHub sont irréguliers : chaque exécution tourne donc
+# ~5 h 45 en relevant les résultats toutes les 15 minutes, puis relance elle-même la suivante.
 on:
   schedule:
-    - cron: "*/15 * * * *"  # toutes les 15 minutes (GitHub peut retarder de quelques minutes)
-  workflow_dispatch: {}      # lancement manuel : onglet Actions → Run workflow
-  push:                      # passage immédiat à chaque mise à jour du site (hors données)
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+  push:
     branches: [main]
     paths-ignore: ["data/**"]
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: collect
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 355
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Lire le fichier officiel de la CEC
-        run: node scripts/collect.mjs
-      - name: Publier si les données ont changé
+      - name: Relevés toutes les 15 minutes
         run: |
-          if [ -n "$(git status --porcelain data)" ]; then
-            git config user.name "collecte-automatique"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add data
-            git commit -m "Relevé CEC $(date -u +%Y-%m-%dT%H:%MZ)"
-            git push
-          else
-            echo "Aucun changement à publier."
+          git config user.name "collecte-automatique"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in $(seq 1 23); do
+            git pull -q --rebase origin main || true
+            node scripts/collect.mjs || true
+            if [ -n "$(git status --porcelain data)" ]; then
+              git add data
+              git commit -q -m "Relevé $(date -u +%Y-%m-%dT%H:%MZ)"
+              git push -q origin HEAD:main || (git pull -q --rebase origin main && git push -q origin HEAD:main) || true
+            fi
+            [ "$i" -lt 23 ] && sleep 900
+          done
+      - name: Relancer la collecte (jusqu'au 5 novembre 2026)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$(date -u +%Y%m%d)" -le 20261105 ]; then
+            gh workflow run collect.yml --ref main -R "$GITHUB_REPOSITORY"
           fi
