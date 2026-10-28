@@ -145,12 +145,35 @@
     "joint": 9.2,
     "ensemble": 8.9,
     "dem": 6.5,
-    "yb": 6.0,
-    "utj": 6.0,
+    "yb": 6,
+    "utj": 6,
     "otzma": 5.6,
     "shas": 5.5,
-    "rzp": 5.0,
+    "rzp": 5,
     "raam": 4.8
+   }
+  },
+  {
+   "t": "2026-10-28T10:58:00+02:00",
+   "prog": "76,89 % des bulletins",
+   "source": {
+    "label": "The Petek — chiffres de la Commission électorale centrale (collecte automatique)",
+    "url": "https://www.thepetek.com/results"
+   },
+   "full": true,
+   "valid": 4006695,
+   "seats": {
+    "ensemble": 11,
+    "yb": 8,
+    "yashar": 20,
+    "dem": 8,
+    "raam": 6,
+    "joint": 13,
+    "likud": 27,
+    "rzp": 6,
+    "utj": 7,
+    "otzma": 7,
+    "shas": 7
    }
   }
  ]
